@@ -1,3 +1,11 @@
-echo "Note: Python3 must be enabled before updating remote plugins
-If Deoplete was installed prior to Python support being added to Neovim, :UpdateRemotePlugins
-should be executed manually in order to enable auto-completion."
+post_install() {
+    echo ""
+    echo "    Note: Python3 must be enabled before updating remote plugins
+    If Deoplete was installed prior to Python support being added to Neovim, :UpdateRemotePlugins
+    should be executed manually in order to enable auto-completion."
+
+    echo ""
+    echo "    you might need to add the following to your init.vim:
+    \"let g:deoplete#enable_at_startup = 1\""
+    echo ""
+}
