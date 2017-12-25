@@ -8,6 +8,7 @@ pkgbase = deoplete-git
 	license = MIT
 	makedepends = git
 	depends = python-neovim
+	depends = python2-neovim
 	provides = deoplete-git
 	conflicts = deoplete
 	conflicts = deoplete-git
