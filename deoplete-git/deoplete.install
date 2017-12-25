@@ -1,4 +1,11 @@
+update_helptag() {
+    echo -n "Updating vim help tags..."
+    /usr/bin/nvim --noplugins -u NONE -U NONE --cmd ":helptags /usr/share/nvim/runtime/doc" --cmd ":q" > /dev/null 2>&1
+    echo "done. "
+}
+
 post_install() {
+    update_helptag
     echo ""
     echo "    Note: Python3 must be enabled before updating remote plugins
     If Deoplete was installed prior to Python support being added to Neovim, :UpdateRemotePlugins
@@ -8,4 +15,12 @@ post_install() {
     echo "    you might need to add the following to your init.vim:
     \"let g:deoplete#enable_at_startup = 1\""
     echo ""
+}
+
+post_upgrade() {
+    update_helptag ${1}
+}
+
+post_remove() {
+    update_helptag
 }
