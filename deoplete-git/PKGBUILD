@@ -30,6 +30,9 @@ package() {
     cp -r "${srcdir}/${_name}/"{autoload,doc,plugin,rplugin} \
         "$pkgdir/usr/share/nvim/site"
     mkdir -p "$pkgdir/usr/share/doc/${pkgname}"
-    cp -r "${srcdir}/${_name}/"{README.md,LICENSE} \
+    cp  "${srcdir}/${_name}/"README.md \
         "$pkgdir/usr/share/doc/${pkgname}"
+    mkdir -p "$pkgdir/usr/share/licenses/${pkgname}"
+    cp  "${srcdir}/${_name}/"LICENSE \
+        "$pkgdir/usr/share/licenses/${pkgname}"
 }

@@ -12,7 +12,7 @@ post_install() {
     should be executed manually in order to enable auto-completion."
 
     echo ""
-    echo "    you might need to add the following to your init.vim:
+    echo "    you might need to add the following to your init.vim/vimrc:
     \"let g:deoplete#enable_at_startup = 1\""
     echo ""
 }
@@ -23,4 +23,9 @@ post_upgrade() {
 
 post_remove() {
     update_helptag
+
+    echo ""
+    echo "    you might need to remove the following to your init.vim/vimrc:
+    \"let g:deoplete#enable_at_startup = 1\""
+    echo ""
 }
