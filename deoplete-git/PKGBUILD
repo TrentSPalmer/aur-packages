@@ -26,9 +26,9 @@ pkgver() {
 }
 
 package() {
-    mkdir -p "$pkgdir/usr/share/nvim/site"
+    mkdir -p "$pkgdir/usr/share/nvim/runtime"
     cp -r "${srcdir}/${_name}/"{autoload,doc,plugin,rplugin} \
-        "$pkgdir/usr/share/nvim/site"
+        "$pkgdir/usr/share/nvim/runtime"
     mkdir -p "$pkgdir/usr/share/doc/${pkgname}"
     cp  "${srcdir}/${_name}/"README.md \
         "$pkgdir/usr/share/doc/${pkgname}"

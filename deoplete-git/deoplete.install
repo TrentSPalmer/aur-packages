@@ -1,5 +1,5 @@
 update_helptag() {
-    echo -n "Updating vim help tags..."
+    echo -n "Updating neovim (nvim) help tags..."
     /usr/bin/nvim --noplugins -u NONE -U NONE --cmd ":helptags /usr/share/nvim/runtime/doc" --cmd ":q" > /dev/null 2>&1
     echo "done. "
 }
