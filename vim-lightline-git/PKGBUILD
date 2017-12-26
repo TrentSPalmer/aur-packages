@@ -6,7 +6,7 @@
 
 _name='vim-lightline'
 pkgname="${_name}-git"
-pkgver=
+pkgver=r515.583138f
 pkgrel=1
 pkgdesc='A light and configurable statusline/tabline for Vim'
 arch=('any')
@@ -18,13 +18,12 @@ provides=('vim-lightline-git')
 conflicts=('vim-lightline' 'vim-lightline-git')
 replaces=('vim-lightline')
 install='lightline.install'
-# source=("git://github.com/itchyny/lightline.vim.git")
 source=("${_name}::${url//https/git}")
 md5sums=('SKIP')
 
 pkgver() {
     cd "${srcdir}/${_name}"
-    git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 package() {
