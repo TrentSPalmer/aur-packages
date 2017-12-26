@@ -1,0 +1,34 @@
+update_neovim_helptag() {
+    echo -n "Updating neovim (nvim) help tags..."
+    /usr/bin/nvim --noplugins -u NONE -U NONE \
+      --cmd ":helptags /usr/share/nvim/runtime/doc" --cmd ":q" > /dev/null 2>&1
+    echo "done. "
+}
+
+update_vim_helptag() {
+    echo -n 'Updating vim help tags...'
+    /usr/bin/vim --noplugins -u NONE -U NONE \
+      --cmd ":helptags /usr/share/vim/vimfiles/doc" --cmd ":q" > /dev/null 2>&1
+    echo 'done.'
+}
+
+post_install() {
+    update_neovim_helptag
+    update_vim_helptag
+    echo ""
+    echo "    see https://github.com/itchyny/lightline.vim for
+      tips on setting $TERM and configuring init.vim/vimrc"
+    echo ""
+}
+
+post_upgrade() {
+    update_neovim_helptag
+    update_vim_helptag
+}
+
+post_remove() {
+    update_neovim_helptag
+    update_vim_helptag
+}
+
+# vim:set ts=2 sw=2 et:
