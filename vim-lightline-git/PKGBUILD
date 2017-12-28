@@ -35,11 +35,6 @@ package() {
     cp -r "${srcdir}/${_name}/"{autoload,doc,plugin} \
         "$pkgdir/usr/share/vim/vimfiles"
 
-    mkdir -p "$pkgdir/usr/share/doc/${pkgname}"
-    cp  "${srcdir}/${_name}/"README.md \
-        "$pkgdir/usr/share/doc/${pkgname}"
-
-    mkdir -p "$pkgdir/usr/share/licenses/${pkgname}"
-    cp  "${srcdir}/${_name}/"LICENSE \
-        "$pkgdir/usr/share/licenses/${pkgname}"
+    install -D -m644 "${srcdir}/${_name}/README.md" $pkgdir/usr/share/doc/$pkgname/README.md
+    install -D -m644 "${srcdir}/${_name}/LICENSE" $pkgdir/usr/share/licenses/$pkgname/LICENSE
 }
