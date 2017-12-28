@@ -1,11 +1,6 @@
 # Maintainer: Trent Palmer trenttdually at gmail
 
 pkgname='vimscripts-autoclose'
-
-# hack $SRCDEST because the source tarball download name is too generic
-SRCDEST="/tmp/makepkg/${pkgname}"
-[[ -d "${SRCDEST}" ]] || mkdir -p "${SRCDEST}"
-
 _srcpkgname='AutoClose'
 pkgver=1.2
 pkgrel=1
@@ -26,7 +21,7 @@ backup=()
 options=()
 install=
 changelog=
-source=("https://github.com/vim-scripts/AutoClose/archive/${pkgver}.tar.gz")
+source=("$pkgname-$pkgver.tar.gz::https://github.com/vim-scripts/AutoClose/archive/${pkgver}.tar.gz")
 noextract=()
 md5sums=('8eb8630367d6978f3e2696df27eff4eb')
 validpgpkeys=()
@@ -40,7 +35,5 @@ package() {
     cp -r "${srcdir}/${_srcpkgname}-${pkgver}/plugin" \
         "$pkgdir/usr/share/vim/vimfiles"
 
-    mkdir -p "$pkgdir/usr/share/doc/${pkgname}"
-    cp  "${srcdir}/${_srcpkgname}-${pkgver}/README" \
-        "$pkgdir/usr/share/doc/${pkgname}"
+    install -D -m644 "${srcdir}/${_srcpkgname}-${pkgver}/README" $pkgdir/usr/share/doc/$pkgname/README
 }
