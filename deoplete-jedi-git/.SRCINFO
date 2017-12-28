@@ -1,0 +1,20 @@
+pkgbase = deoplete-jedi-git
+	pkgdesc = jedi add-on for deoplete completion plugin for neovim
+	pkgver = r224.715acf2
+	pkgrel = 1
+	url = https://github.com/zchee/deoplete-jedi
+	arch = x86_64
+	license = MIT
+	makedepends = git
+	depends = deoplete-git
+	depends = python-jedi
+	depends = python2-jedi
+	provides = deoplete-jedi-git
+	conflicts = deoplete-jedi
+	conflicts = deoplete-jedi-git
+	replaces = deoplete-jedi
+	source = deoplete-jedi::git://github.com/zchee/deoplete-jedi
+	md5sums = SKIP
+
+pkgname = deoplete-jedi-git
+
