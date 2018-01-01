@@ -6,7 +6,7 @@
 
 _name='vim-lightline'
 pkgname="${_name}-git"
-pkgver=r515.583138f
+pkgver=r516.6f84195
 pkgrel=1
 pkgdesc='A light and configurable statusline/tabline for Vim'
 arch=('any')
