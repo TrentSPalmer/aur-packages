@@ -5,3 +5,6 @@ pull in https://aur.archlinux.org/vim-lightline-git.git at commit
 the maintainer,
 jeff tracy \<jefftracy nine one one at aol dot com\>, will
 be listed as a previous contributor
+
+### Dual-Purpose
+PKGBUILD modified to work with both vim and neovim
