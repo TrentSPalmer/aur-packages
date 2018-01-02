@@ -18,7 +18,6 @@ conflicts=('deoplete-jedi' 'deoplete-jedi-git')
 replaces=('deoplete-jedi')
 backup=()
 options=()
-# install="${_name}.install"
 source=("${_name}::${url//https/git}")
 noextract=()
 md5sums=('SKIP')
