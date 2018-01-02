@@ -7,6 +7,6 @@ contributors
 
 ### Build Options
 
-extends the build options: _omnisharp, _gocode, _rust, and _tern
+extends the build options: `_omnisharp`, `_gocode`, `_rust`, and `_tern`
 throughout the PKGBUILD, in order to avoid unneeded git clones/pulls
 and dependancy installs
