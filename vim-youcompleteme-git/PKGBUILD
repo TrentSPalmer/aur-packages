@@ -45,6 +45,8 @@ arch=('i686' 'x86_64' 'armv7h')
 url='http://valloric.github.com/YouCompleteMe/'
 license=('GPL3')
 groups=('vim-plugins')
+provides=('vim-youcompleteme')
+conflicts=('')
 
 depends=('boost' 'boost-libs' 'ncurses5-compat-libs' 'python' 'python2' 'vim' 'clang')
 [[ "$_omnisharp" = "y" ]] && depends+=('mono')

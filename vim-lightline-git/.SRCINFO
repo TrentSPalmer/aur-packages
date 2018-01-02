@@ -9,10 +9,9 @@ pkgbase = vim-lightline-git
 	makedepends = git
 	depends = vim-runtime
 	depends = neovim
-	provides = vim-lightline-git
+	provides = vim-lightline
 	conflicts = vim-lightline
 	conflicts = vim-lightline-git
-	replaces = vim-lightline
 	source = vim-lightline::git://github.com/itchyny/lightline.vim
 	md5sums = SKIP
 

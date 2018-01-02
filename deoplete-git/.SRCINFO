@@ -9,10 +9,8 @@ pkgbase = deoplete-git
 	makedepends = git
 	depends = python-neovim
 	depends = python2-neovim
-	provides = deoplete-git
+	provides = deoplete
 	conflicts = deoplete
-	conflicts = deoplete-git
-	replaces = deoplete
 	source = deoplete::git://github.com/Shougo/deoplete.nvim
 	md5sums = SKIP
 

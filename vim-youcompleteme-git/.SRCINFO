@@ -26,6 +26,7 @@ pkgbase = vim-youcompleteme-git
 	depends = mono
 	depends = rust
 	depends = nodejs
+	provides = vim-youcompleteme
 	source = git+https://github.com/Valloric/YouCompleteMe.git
 	source = git+https://github.com/ross/requests-futures.git
 	source = git+https://github.com/Valloric/ycmd.git

@@ -9,10 +9,8 @@ pkgbase = deoplete-jedi-git
 	depends = deoplete-git
 	depends = python-jedi
 	depends = python2-jedi
-	provides = deoplete-jedi-git
+	provides = deoplete-jedi
 	conflicts = deoplete-jedi
-	conflicts = deoplete-jedi-git
-	replaces = deoplete-jedi
 	source = deoplete-jedi::git://github.com/zchee/deoplete-jedi
 	md5sums = SKIP
 
