@@ -20,20 +20,20 @@
 #                                          Build Options
 ###########################################################################################################
 # change all build options to no by default
-_omnisharp="y"
+_omnisharp="n"
 
-_gocode="y"
+_gocode="n"
 
-_rust="y"
+_rust="n"
 
-_tern="y"
+_tern="n"
 
 _completer="ON"
 
 ###########################################################################################################
 
 pkgname=vim-youcompleteme-git
-pkgver=2264.92405cb0
+pkgver=2268.d27563d2
 pkgver() {
   cd "YouCompleteMe" || exit
   echo "$(git rev-list --count master).$(git rev-parse --short master)"
@@ -42,7 +42,7 @@ pkgrel=1
 pkgdesc="A code-completion engine for Vim"
 
 arch=('i686' 'x86_64' 'armv7h')
-url='http://valloric.github.com/YouCompleteMe/'
+url='https://valloric.github.com/YouCompleteMe/'
 license=('GPL3')
 groups=('vim-plugins')
 provides=('vim-youcompleteme')
@@ -59,6 +59,7 @@ makedepends=('cmake' 'git' 'make')
 [[ "$_tern" = "y" ]] && makedepends+=('npm')
 [[ "$_gocode" = "y" ]] && makedepends+=('go')
 
+# source=('git+https://github.com/Valloric/YouCompleteMe.git#commit=1080a310274b546a6e7a6ae87aa6c7ea2fa646e7' #ycm
 source=('git+https://github.com/Valloric/YouCompleteMe.git' #ycm
         'git+https://github.com/ross/requests-futures.git'  #ycm
         'git+https://github.com/Valloric/ycmd.git'          #ycm
