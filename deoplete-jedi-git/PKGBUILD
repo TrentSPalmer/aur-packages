@@ -1,16 +1,22 @@
 # Maintainer: Trent Palmer trenttdually at gmail
+
+###########################################################################################################
+#                                          Build Options
+###########################################################################################################
+_vim="y"
+
+_neovim="y"
+###########################################################################################################
+
 _name='deoplete-jedi'
 pkgname="${_name}-git"
-pkgver=r226.f7a0c4f
+pkgver=r228.0410de7
 pkgrel=1
 pkgdesc="jedi add-on for deoplete completion plugin for neovim"
 arch=('any')
 url="https://github.com/zchee/deoplete-jedi"
 license=('MIT')
 groups=()
-# python-jedia pulls in python-parso
-# perhaps the arch packages can be used instead of
-# the git submodules?
 depends=('deoplete-git' 'python-jedi' 'python2-jedi')
 makedepends=('git') 
 provides=('deoplete-jedi')
@@ -34,9 +40,17 @@ prepare() {
 }
 
 package() {
+  if [ "$_neovim" = "y" ]; then
     mkdir -p "$pkgdir/usr/share/nvim/runtime/rplugin/python3/deoplete"
     cp -r "${srcdir}/${_name}/rplugin/python3/deoplete/sources" \
-        "$pkgdir/usr/share/nvim/runtime/rplugin/python3/deoplete/"
+      "$pkgdir/usr/share/nvim/runtime/rplugin/python3/deoplete/"
+  fi
+
+  if [ "$_vim" = "y" ]; then
+    mkdir -p "$pkgdir/usr/share/vim/vimfiles/rplugin/python3/deoplete"
+    cp -r "${srcdir}/${_name}/rplugin/python3/deoplete/sources" \
+      "$pkgdir/usr/share/vim/vimfiles/rplugin/python3/deoplete/"
+  fi
 
     install -D -m644 "${srcdir}/${_name}/README.md" $pkgdir/usr/share/doc/$pkgname/README.md
     install -D -m644 "${srcdir}/${_name}/LICENSE" $pkgdir/usr/share/licenses/$pkgname/LICENSE
