@@ -5,12 +5,13 @@
 ###########################################################################################################
 _vim="y"
 
-_neovim="y"
+# if you have a newer version of neovim you may not need or want to set _neovim="y"
+_neovim="n"
 ###########################################################################################################
 
 _name='deoplete'
 pkgname="${_name}-git"
-pkgver=4.0.serial.r107.gb14aa70
+pkgver=4.0.serial.r288.gf8faaf2
 pkgrel=1
 pkgdesc="deoplete completion plugin for neovim"
 arch=('any')
