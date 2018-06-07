@@ -33,7 +33,7 @@ _completer="ON"
 ###########################################################################################################
 
 pkgname=vim-youcompleteme-git
-pkgver=2268.d27563d2
+pkgver=2357.c9ff2177
 pkgver() {
   cd "YouCompleteMe" || exit
   echo "$(git rev-list --count master).$(git rev-parse --short master)"
