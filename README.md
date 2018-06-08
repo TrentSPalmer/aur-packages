@@ -7,5 +7,5 @@ the source like so.
 
 ```conf
 # source=("${_name}::${url//https/git}")
-source=("${_name}::${url//https/git}commit=<commit_hash>")
+source=("${_name}::${url//https/git}#commit=<commit_hash>")
 ```
