@@ -5,12 +5,12 @@
 ###########################################################################################################
 _vim="y"
 
-_neovim="y"
+_neovim="n"
 ###########################################################################################################
 
 _name='deoplete-jedi'
 pkgname="${_name}-git"
-pkgver=r228.0410de7
+pkgver=r242.45f1ac2
 pkgrel=1
 pkgdesc="jedi add-on for deoplete completion plugin for neovim"
 arch=('any')
