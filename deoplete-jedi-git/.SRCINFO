@@ -7,11 +7,13 @@ pkgbase = deoplete-jedi-git
 	license = MIT
 	makedepends = git
 	depends = deoplete-git
-	depends = python-jedi
-	depends = python2-jedi
 	provides = deoplete-jedi
 	conflicts = deoplete-jedi
-	source = deoplete-jedi::git://github.com/zchee/deoplete-jedi
+	source = git+https://github.com/zchee/deoplete-jedi
+	source = git+https://github.com/davidhalter/jedi.git
+	source = git+https://github.com/davidhalter/parso.git
+	md5sums = SKIP
+	md5sums = SKIP
 	md5sums = SKIP
 
 pkgname = deoplete-jedi-git
