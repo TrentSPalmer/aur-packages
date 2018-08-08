@@ -1,12 +1,12 @@
 # Maintainer: Trent Palmer trenttdually at gmail
 _name='nvim-yarp'
 pkgname="${_name}-git"
-pkgver=r39.622cf39
+pkgver=r41.52317ce
 pkgrel=1
 pkgdesc="(an) attempt (at) writing a remote plugin framework without :UpdateRemotePlugins."
 arch=('any')
 url="https://github.com/roxma/nvim-yarp"
-license=('unknown')
+license=('MIT')
 groups=()
 depends=('vim' 'python-neovim')
 makedepends=('git') 
