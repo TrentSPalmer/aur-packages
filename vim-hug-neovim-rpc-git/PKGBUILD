@@ -1,12 +1,12 @@
 # Maintainer: Trent Palmer trenttdually at gmail
 _name='vim-hug-neovim-rpc'
 pkgname="${_name}-git"
-pkgver=r86.45080a2
+pkgver=r95.4ee5d81
 pkgrel=1
 pkgdesc="trying to build a compatibility layer for neovim rpc client working on vim8"
 arch=('any')
 url="https://github.com/roxma/vim-hug-neovim-rpc"
-license=('unknown')
+license=('MIT')
 groups=()
 depends=('vim' 'python-neovim')
 optdepends=('nvim-yarp')
