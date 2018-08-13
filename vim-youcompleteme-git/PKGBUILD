@@ -33,7 +33,7 @@ _completer="ON"
 ###########################################################################################################
 
 pkgname=vim-youcompleteme-git
-pkgver=2361.e1ead995
+pkgver=2373.15362d9c
 pkgver() {
   cd "YouCompleteMe" || exit
   echo "$(git rev-list --count master).$(git rev-parse --short master)"
@@ -67,9 +67,10 @@ source=('git+https://github.com/Valloric/YouCompleteMe.git' #ycm
         'git+https://github.com/bottlepy/bottle.git'        #ycmd
         'git+https://github.com/slezica/python-frozendict.git'    #ycmd
         'git+https://github.com/PythonCharmers/python-future.git' #ycmd
-        'git+https://github.com/vheon/JediHTTP.git'               #ycmd
-        'git+https://github.com/davidhalter/jedi.git'             #jediHTTP
-        'git+https://github.com/Pylons/waitress.git'              #ycmd,jediHTTP
+        'git+https://github.com/davidhalter/jedi.git'             #ycmd
+        'git+https://github.com/davidhalter/parso.git'             #ycmd
+        'git+https://github.com/Pylons/waitress.git'              #ycmd
+        'git+https://github.com/micbou/regex.git'              #ycmd
         )
 
 [[ "$_omnisharp" = "y" ]] && source+=('git+https://github.com/icsharpcode/NRefactory.git'       #OmniSharpServer
@@ -81,7 +82,7 @@ source=('git+https://github.com/Valloric/YouCompleteMe.git' #ycm
 [[ "$_gocode" = "y" ]] && source+=('git+https://github.com/nsf/gocode.git'                   #ycmd
                                    'git+https://github.com/Manishearth/godef.git'            #ycmd
                                    )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 [[ "$_omnisharp" = "y" ]] && sha256sums+=('SKIP' 'SKIP' 'SKIP')
 [[ "$_rust" = "y" ]] && sha256sums+=('SKIP')
@@ -95,14 +96,11 @@ prepare() {
   YouCompleteMe=("requests-futures" "ycmd")
   gitprepare "YouCompleteMe" "third_party/" "${YouCompleteMe[@]}"
 
-  ycmd=("bottle" "python-frozendict" "python-future" "JediHTTP" "waitress" "requests")
+  ycmd=("bottle" "python-frozendict" "python-future" "waitress" "requests" "jedi" "parso" "regex")
   [[ "$_omnisharp" = "y" ]] && ycmd+=("OmniSharpServer")
   [[ "$_rust" = "y" ]] && ycmd+=("racerd")
   [[ "$_gocode" = "y" ]] && ycmd+=("gocode" "godef")
   gitprepare "YouCompleteMe/third_party/ycmd" "third_party/" "${ycmd[@]}"
-
-  JediHTTP=("waitress" "jedi" "bottle")
-  gitprepare "YouCompleteMe/third_party/ycmd/third_party/JediHTTP" "vendor/" "${JediHTTP[@]}"
 
   if [ "$_omnisharp" = "y" ]; then
     OmniSharpServer=("NRefactory" "cecil")
@@ -185,7 +183,7 @@ package() {
     "$pkgdir/usr/share/vim/vimfiles/third_party"
   cp -r "$srcdir/YouCompleteMe/third_party/ycmd/"{ycmd,ycm_core.so,CORE_VERSION,cpp,clang_includes} \
     "$pkgdir/usr/share/vim/vimfiles/third_party/ycmd"
-  cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,frozendict,JediHTTP,python-future,requests,waitress} \
+  cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,parso,frozendict,jedi,python-future,requests,waitress,cregex} \
     "$pkgdir/usr/share/vim/vimfiles/third_party/ycmd/third_party"
 
   if [ "$_omnisharp" = "y" ]; then
@@ -215,5 +213,6 @@ package() {
   fi
 
   find "$pkgdir" -name .git -exec rm -fr {} +
-  rm -rf "$pkgdir/usr/share/vim/vimfiles/third_party/ycmd/ycmd/tests"
+  find "$pkgdir" -name .gitignore -exec rm -fr {} +
+  find "$pkgdir" -name tests -exec rm -fr {} +
 }
