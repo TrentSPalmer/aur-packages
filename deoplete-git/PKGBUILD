@@ -11,7 +11,7 @@ _neovim="n"
 
 _name='deoplete'
 pkgname="${_name}-git"
-pkgver=r1493.04ea041
+pkgver=r1524.2ead0d5
 pkgrel=1
 pkgdesc="deoplete completion plugin for neovim"
 arch=('any')
@@ -34,9 +34,8 @@ source=("${_name}::${url//https/git}")
 noextract=()
 md5sums=('SKIP')
 
-
 pkgver() {
-    cd "${srcdir}/${_name}"
+  cd "${srcdir}/${_name}"
     printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
