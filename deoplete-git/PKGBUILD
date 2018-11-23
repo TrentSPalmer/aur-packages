@@ -5,13 +5,15 @@
 ###########################################################################################################
 _vim="y"
 
-# if you have a newer version of neovim you may not need or want to set _neovim="y"
+# neovim in Arch Linux seems to load vim extensions from /usr/share/vim/vimfiles by
+# default now, (or you can add 'set rtp^=/usr/share/vim/vimfiles/' to .vimrc)
+# but in any event, you may not need or want to set _neovim="y"
 _neovim="n"
 ###########################################################################################################
 
 _name='deoplete'
 pkgname="${_name}-git"
-pkgver=r1524.2ead0d5
+pkgver=r1530.7cc5da2
 pkgrel=1
 pkgdesc="deoplete completion plugin for neovim"
 arch=('any')
@@ -36,7 +38,7 @@ md5sums=('SKIP')
 
 pkgver() {
   cd "${srcdir}/${_name}"
-    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 package() {
