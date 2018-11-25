@@ -42,7 +42,7 @@ pkgrel=1
 pkgdesc="A code-completion engine for Vim"
 
 arch=('i686' 'x86_64' 'armv7h')
-url='https://valloric.github.com/YouCompleteMe/'
+url='https://github.com/Valloric/YouCompleteMe'
 license=('GPL3')
 groups=('vim-plugins')
 provides=('vim-youcompleteme')
