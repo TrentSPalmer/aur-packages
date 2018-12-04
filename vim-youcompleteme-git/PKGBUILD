@@ -42,10 +42,10 @@ pkgver() {
 	cd "YouCompleteMe" || exit
 	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
-pkgrel=1
+pkgrel=2
 pkgdesc="A code-completion engine for Vim"
 arch=('any')
-url='http://valloric.github.com/YouCompleteMe/'
+url='https://github.com/Valloric/YouCompleteMe'
 license=('GPL3')
 groups=('vim-plugins')
 depends=('boost' 'boost-libs' 'ncurses5-compat-libs' 'python' 'python2' 'nodejs' 'vim' 'clang')
