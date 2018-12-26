@@ -37,7 +37,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2449.0790dc99
+pkgver=r2455.7997fc55
 pkgver() {
 	cd "YouCompleteMe" || exit
 	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -173,7 +173,7 @@ prepare() {
 
 	msg2 'Setting up Git submodules...'
 
-	local YouCompleteMe=("requests-futures" "ycmd" "python-futures")
+	local YouCompleteMe=("requests-futures" "ycmd" "python-future")
 	local YouCompleteMeRequestsDeps=("idna" "certifi" "chardet" "urllib3" "requests")
 	gitprepare "YouCompleteMe" "third_party/" "${YouCompleteMe[@]}"
 	gitprepare "YouCompleteMe" "third_party/requests_deps/" "${YouCompleteMeRequestsDeps[@]}"
