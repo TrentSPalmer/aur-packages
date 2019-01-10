@@ -37,7 +37,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2459.c209cdbb
+pkgver=r2463.ccc06c2c
 pkgver() {
 	cd "YouCompleteMe" || exit
 	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -55,7 +55,7 @@ source=(
 'git+https://github.com/Valloric/YouCompleteMe.git' #ycm
 'git+https://github.com/ross/requests-futures.git'  #ycm
 'git+https://github.com/Valloric/ycmd.git'          #ycm
-'git+https://github.com/kennethreitz/requests.git'  #ycmd
+'git+https://github.com/requests/requests.git'  #ycmd
 'git+https://github.com/kjd/idna.git'  #ycmd
 'git+https://github.com/certifi/python-certifi.git'  #ycmd
 'git+https://github.com/chardet/chardet.git'  #ycmd
