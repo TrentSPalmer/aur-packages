@@ -28,6 +28,8 @@ _docs="n"
 _tests="n"
 _use_system_clang="ON"
 _use_python2="OFF"
+_use_system_python="y"
+_use_system_jedi="y"
 
 _neovim="$NEOVIM_YOUCOMPLETEME"
 #=========================================================================================================#
@@ -39,7 +41,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2500.9dee2b4e
+pkgver=r2506.d691404a
 pkgver() {
 	cd "YouCompleteMe" || exit
 	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -50,27 +52,28 @@ arch=('any')
 url='https://github.com/Valloric/YouCompleteMe'
 license=('GPL3')
 groups=('vim-plugins')
-depends=('boost' 'boost-libs' 'ncurses5-compat-libs' 'python' 'python2' 'nodejs' 'vim' 'clang')
+depends=('boost' 'boost-libs' 'nodejs' 'vim' 'clang')
 makedepends=('cmake' 'git' 'make' 'curl')
 install=install
 source=(
 'git+https://github.com/Valloric/YouCompleteMe.git' #ycm
-'git+https://github.com/ross/requests-futures.git'  #ycm
 'git+https://github.com/Valloric/ycmd.git'          #ycm
-'git+https://github.com/requests/requests.git'  #ycmd
-'git+https://github.com/kjd/idna.git'  #ycmd
-'git+https://github.com/certifi/python-certifi.git'  #ycmd
-'git+https://github.com/chardet/chardet.git'  #ycmd
-'git+https://github.com/urllib3/urllib3.git'  #ycmd
-'git+https://github.com/defnull/bottle.git'  #ycmd
-'git+https://github.com/slezica/python-frozendict.git'    #ycmd
-'git+https://github.com/PythonCharmers/python-future.git' #ycmd
 'git+https://github.com/davidhalter/jedi.git'             #jedi
 'git+https://github.com/davidhalter/parso.git'            #jedi
+'git+https://github.com/numpy/numpydoc'            #jedi
+'git+https://github.com/ross/requests-futures.git'  #ycm
+'git+https://github.com/requests/requests.git'  #ycmd
+'git+https://github.com/kjd/idna.git'  #requests
+'git+https://github.com/certifi/python-certifi.git'  #requests
+'git+https://github.com/chardet/chardet.git'  #requests
+'git+https://github.com/urllib3/urllib3.git'  #requests
+'git+https://github.com/bottlepy/bottle.git'  #ycmd
+'git+https://github.com/slezica/python-frozendict.git'    #ycmd
+'git+https://github.com/PythonCharmers/python-future.git' #ycmd
 'git+https://github.com/Pylons/waitress.git'              #ycmd,jediHTTP
 'git+https://github.com/micbou/regex.git'  #ycmd
 )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 #=========================================================================================================#
 #=========================================================================================================#
 
@@ -113,6 +116,27 @@ if [[ "$_tern" == "y" ]]; then
 	makedepends+=('npm')
 fi
 
+if [[ "$_use_system_python" == "n" ]]; then
+        if [[ "$_use_python2" == "OFF" ]]; then
+                depends+=('python')
+        elif [[ "$_use_python2" == "ON" ]]; then
+                depends+=('python2')
+        fi
+elif [[ "$_use_system_python" == "y" ]]; then
+        if [[ "$_use_python2" == "OFF" ]]; then
+                depends+=('python-requests-futures' 'python-certifi' 'python-future' 'python-bottle' 'python-frozendict' 'python-waitress' 'python-regex')
+        elif [[ "$_use_python2" == "ON" ]]; then
+                depends+=('python2-requests-futures' 'python2-certifi' 'python2-future' 'python2-bottle' 'python2-frozendict' 'python2-waitress' 'python2-regex')
+        fi
+fi
+
+if [[ "$_use_system_jedi" == "y" ]]; then
+        if [[ "$_use_python2" == "OFF" ]]; then
+                depends+=('python-jedi' 'python-parso' 'python-numpydoc')
+        elif [[ "$_use_python2" == "ON" ]]; then
+                depends+=('python2-jedi' 'python2-parso' 'python2-numpydoc')
+        fi
+fi
 #=========================================================================================================#
 #=========================================================================================================#
 
@@ -177,6 +201,7 @@ prepare() {
 
 	local YouCompleteMe=("requests-futures" "ycmd" "python-future")
 	local YouCompleteMeRequestsDeps=("idna" "python-certifi" "chardet" "urllib3" "requests")
+
 	gitprepare "YouCompleteMe" "third_party/" "${YouCompleteMe[@]}"
 	gitprepare "YouCompleteMe" "third_party/requests_deps/" "${YouCompleteMeRequestsDeps[@]}"
 
@@ -192,7 +217,7 @@ prepare() {
 
 	gitprepare "YouCompleteMe/third_party/ycmd" "third_party/" "${ycmd[@]}"
 
-	local ycmdJediDeps=("jedi" "parso")
+	local ycmdJediDeps=("jedi" "parso" "numpydoc")
 	gitprepare "YouCompleteMe/third_party/ycmd" "third_party/jedi_deps" "${ycmdJediDeps[@]}"
 
 	local ycmdRequestsDeps=("python-certifi" "chardet" "idna" "requests" "urllib3")
@@ -275,27 +300,37 @@ package() {
 		vimfiles_dir=usr/share/nvim/runtime
 	fi
 
-	# mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
-	mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
-	mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/jedi_deps"
-        
-	mkdir -p "$pkgdir/$vimfiles_dir/third_party/requests_deps"
-
-	cp -r "$srcdir/YouCompleteMe/"{autoload,doc,plugin,python} \
-		"$pkgdir/$vimfiles_dir"
-	cp -r "$srcdir/YouCompleteMe/third_party/"{pythonfutures,requests-futures,python-future} \
-		"$pkgdir/$vimfiles_dir/third_party"
-	cp -r "$srcdir/YouCompleteMe/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
-		"$pkgdir/$vimfiles_dir/third_party/requests_deps"
+        mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
 
 	cp -r "$srcdir/YouCompleteMe/third_party/ycmd/"{ycmd,ycm_core.so,CORE_VERSION} \
 		"$pkgdir/$vimfiles_dir/third_party/ycmd"
-	cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,cregex,frozendict,python-future,waitress} \
-		"$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
-	cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
-		"$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
-	cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/jedi_deps/"{jedi,parso} \
-		"$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/jedi_deps"
+
+	cp -r "$srcdir/YouCompleteMe/"{autoload,doc,plugin,python} \
+		"$pkgdir/$vimfiles_dir"
+
+        if [[ "$_use_system_python" == "n" ]]; then
+                mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
+                mkdir -p "$pkgdir/$vimfiles_dir/third_party/requests_deps"
+
+                cp -r "$srcdir/YouCompleteMe/third_party/"{pythonfutures,requests-futures,python-future} \
+                        "$pkgdir/$vimfiles_dir/third_party"
+                cp -r "$srcdir/YouCompleteMe/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
+                        "$pkgdir/$vimfiles_dir/third_party/requests_deps"
+
+                cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,cregex,frozendict,python-future,waitress} \
+                        "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
+                cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
+                        "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
+
+        elif [[ "$_use_system_python" == "y" ]]; then
+                cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/clang" \
+                        "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
+        fi
+        
+        if [[ "$_use_system_jedi" == "n" ]]; then
+                cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/jedi_deps" \
+                        "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/"
+        fi
 
 	if [[ "$_omnisharp" == "y" ]]; then
 		mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/OmniSharpServer/OmniSharp/bin/Release"
@@ -323,6 +358,11 @@ package() {
 			"$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
 	fi
 
+	if [[ "$_typescript" == "y" ]]; then
+	  cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tsserver" \
+		  "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
+	fi
+
 	if [[ "$_java" == "y" ]]; then
 		mv "$srcdir/YouCompleteMe/third_party/ycmd/third_party/eclipse.jdt.ls" "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
 		# Force the java completion engine to create its workspace at /tmp instead which is writeable by every user
@@ -342,8 +382,10 @@ package() {
 	if [[ "$_use_python2" == "ON" ]]; then
 		:
 	else
-		rm -r "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/bottle/plugins/werkzeug/bottle_werkzeug.py"
-		rm -r "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/bottle/plugins/sqlite/bottle_sqlite.py"
+                if [[ "$_use_system_python" == "n" ]]; then
+                        rm -r "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/bottle/plugins/werkzeug/bottle_werkzeug.py"
+                        rm -r "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/bottle/plugins/sqlite/bottle_sqlite.py"
+                fi  
 	fi
 
 	# Remove unneeded docs
