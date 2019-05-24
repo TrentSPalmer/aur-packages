@@ -4,7 +4,7 @@
 # Contributor: Sven-Hendrik Haase <sh@lutzhaase.com>
 
 pkgname=vim-dart-plugin-git
-pkgver=0.1.0.r51.g8ffc3e2
+pkgver=r87.8ffc3e2
 pkgrel=1
 pkgdesc='Syntax highlighting for Dart in Vim'
 arch=('any')
@@ -14,16 +14,16 @@ depends=('vim-runtime')
 makedepends=('git')
 conflicts=('vim-dart-plugin')
 provides=('vim-dart-plugin')
-source=("$pkgname::git+https://github.com/dart-lang/dart-vim-plugin.git")
+source=(git+https://github.com/dart-lang/dart-vim-plugin.git)
 sha512sums=('SKIP')
 
 pkgver() {
-    cd "$pkgname"
-    git describe --long --tags | sed 's/-/.r/;s/-/./'
+    cd "${srcdir}/dart-vim-plugin"
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 package() {
-    cd "$pkgname"
+    cd "dart-vim-plugin"
     local installpath="$pkgdir/usr/share/vim/vimfiles"
     install -dm755 "$installpath"
     cp -rt "$installpath" autoload doc ftdetect ftplugin indent plugin syntax
