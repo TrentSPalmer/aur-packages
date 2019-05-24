@@ -1,0 +1,35 @@
+post_install() {
+  echo ""
+  echo "    you might need to add the following to your init.vim/vimrc:
+  \"let g:lsc_server_commands = {'dart': 'dart_language_server'}\""
+
+  echo ""
+  echo "  because syntastic doesn't work well with dart,  
+  you might need to also add the following to your init.vim/vimrc:
+  \"let g:loaded_syntastic_dart_dartanalyzer_checker = 0\""
+  echo ""
+}
+
+post_upgrade() {
+  echo ""
+  echo "    you might need to add the following to your init.vim/vimrc:
+  \"let g:lsc_server_commands = {'dart': 'dart_language_server'}\""
+  echo ""
+
+  echo "  because syntastic doesn't work well with dart,  
+  you might need to also add the following to your init.vim/vimrc:
+  \"let g:loaded_syntastic_dart_dartanalyzer_checker = 0\""
+  echo ""
+}
+
+post_remove() {
+  echo ""
+  echo "    you may have added the following to your init.vim/vimrc:
+  \"let g:lsc_server_commands = {'dart': 'dart_language_server'}\""
+  echo ""
+
+  echo "  because syntastic doesn't work well with dart,  
+  you may have also added the following to your init.vim/vimrc:
+  \"let g:loaded_syntastic_dart_dartanalyzer_checker = 0\""
+  echo ""
+}

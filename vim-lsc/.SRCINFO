@@ -1,0 +1,18 @@
+pkgbase = vim-lsc
+	pkgdesc = A vim plugin for communicating with a language server
+	pkgver = 0.3.2
+	pkgrel = 1
+	url = https://github.com/natebosch/vim-lsc
+	install = vim-lsc.install
+	arch = any
+	license = BSD 3-Clause
+	depends = vim
+	optdepends = vim: vim support
+	optdepends = neovim: neovim support
+	provides = vim-lsc
+	conflicts = vim-lsc-git
+	source = vim-lsc-0.3.2.tar.gz::https://github.com/natebosch/vim-lsc/archive/v0.3.2.tar.gz
+	sha256sums = 5264bf3d0e9836f6a15eb16ce8fcb3d940834b0ce9ac688325caf13aabf1e883
+
+pkgname = vim-lsc
+

@@ -1,0 +1,52 @@
+# Maintainer: Trent Palmer trenttdually at gmail
+
+###########################################################################################################
+#                                          Build Options
+###########################################################################################################
+_vim="y"
+
+# neovim can load plugins installed as vim plugins
+_neovim="n"
+###########################################################################################################
+
+_name='vim-lsc'
+pkgname="${_name}"
+pkgver=0.3.2
+pkgrel=1
+pkgdesc="A vim plugin for communicating with a language server"
+arch=('any')
+url="https://github.com/natebosch/vim-lsc"
+license=('BSD 3-Clause')
+groups=()
+depends=('vim')
+optdepends=('vim: vim support' 
+            'neovim: neovim support')
+makedepends=('') 
+provides=('vim-lsc')
+conflicts=('vim-lsc-git')
+replaces=('')
+backup=()
+options=()
+install="${_name}.install"
+source=("$_name-$pkgver.tar.gz::${url}/archive/v${pkgver}.tar.gz")
+noextract=()
+sha256sums=('5264bf3d0e9836f6a15eb16ce8fcb3d940834b0ce9ac688325caf13aabf1e883')
+
+package() {
+  if [ "$_neovim" = "y" ]; then
+    mkdir -p "${pkgdir}/usr/share/nvim/runtime"
+    cp -r "${srcdir}/${_name}-${pkgver}/"{after,autoload,doc,plugin} \
+      "${pkgdir}/usr/share/nvim/runtime"
+  fi
+
+  if [ "$_vim" = "y" ]; then
+    mkdir -p "${pkgdir}/usr/share/vim/vimfiles"
+    cp -r "${srcdir}/${_name}-${pkgver}/"{after,autoload,doc,plugin} \
+      "${pkgdir}/usr/share/vim/vimfiles"
+  fi
+
+  install -D -m644 "${srcdir}/${_name}-${pkgver}/README.md" $pkgdir/usr/share/doc/$pkgname/README.md
+  install -D -m644 "${srcdir}/${_name}-${pkgver}/LICENSE" $pkgdir/usr/share/licenses/$pkgname/LICENSE
+  install -D -m644 "${srcdir}/${_name}-${pkgver}/CHANGELOG.md" $pkgdir/usr/share/licenses/$pkgname/CHANGELOG.md
+  install -D -m644 "${srcdir}/${_name}-${pkgver}/AUTHORS" $pkgdir/usr/share/licenses/$pkgname/AUTHORS
+}
