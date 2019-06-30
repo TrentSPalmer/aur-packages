@@ -41,10 +41,10 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2529.10131222
+pkgver=r2532.d556a43c
 pkgver() {
-	cd "YouCompleteMe" || exit
-	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  cd "YouCompleteMe" || exit
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 pkgrel=1
 pkgdesc="A code-completion engine for Vim"
@@ -83,59 +83,59 @@ sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP
 #                                     Applying PKBUILD Build Options                                      #
 #=========================================================================================================#
 
-if [[ "$_gocode" == "y" ]]; then
-	# ycmd
-	source+=('git+https://github.com/mdempsky/gocode.git')
-	source+=('git+https://github.com/rogpeppe/godef.git')
-	sha256sums+=('SKIP')
-	sha256sums+=('SKIP')
-	makedepends+=('go')
+if [[ "$_gocode" == "y" ]];then
+  # ycmd
+  source+=('git+https://github.com/mdempsky/gocode.git')
+  source+=('git+https://github.com/rogpeppe/godef.git')
+  sha256sums+=('SKIP')
+  sha256sums+=('SKIP')
+  makedepends+=('go')
 fi
 
 
 if [[ "$_omnisharp" == "y" ]]; then
-	source+=( 'git+https://github.com/nosami/OmniSharpServer.git'       #ycmd
-			 'git+https://github.com/icsharpcode/NRefactory.git'       #OmniSharpServer
-			 'git+https://github.com/jbevain/cecil.git'                #OmniSharpServer
-			)
-	sha256sums+=('SKIP' 'SKIP' 'SKIP')
-	depends+=('mono')
-	makedepends+=('mono')
+  source+=( 'git+https://github.com/nosami/OmniSharpServer.git'       #ycmd
+      'git+https://github.com/icsharpcode/NRefactory.git'       #OmniSharpServer
+      'git+https://github.com/jbevain/cecil.git'                #OmniSharpServer
+      )
+  sha256sums+=('SKIP' 'SKIP' 'SKIP')
+  depends+=('mono')
+  makedepends+=('mono')
 fi
 
 if [[ "$_rust" == "y" ]]; then
-	# ycmd
-	source+=( 'git+https://github.com/jwilm/racerd.git')
-	sha256sums+=('SKIP')
-	depends+=('rust')
-	makedepends+=('cargo')
+  # ycmd
+  source+=( 'git+https://github.com/jwilm/racerd.git')
+  sha256sums+=('SKIP')
+  depends+=('rust')
+  makedepends+=('cargo')
 fi
 
 if [[ "$_tern" == "y" ]]; then
-	# ycmd
-	makedepends+=('npm')
+  # ycmd
+  makedepends+=('npm')
 fi
 
 if [[ "$_use_system_python" == "n" ]]; then
-        if [[ "$_use_python2" == "OFF" ]]; then
-                depends+=('python')
-        elif [[ "$_use_python2" == "ON" ]]; then
-                depends+=('python2')
-        fi
+  if [[ "$_use_python2" == "OFF" ]]; then
+    depends+=('python')
+  elif [[ "$_use_python2" == "ON" ]]; then
+    depends+=('python2')
+  fi
 elif [[ "$_use_system_python" == "y" ]]; then
-        if [[ "$_use_python2" == "OFF" ]]; then
-                depends+=('python-requests-futures' 'python-certifi' 'python-future' 'python-bottle' 'python-frozendict' 'python-waitress' 'python-regex')
-        elif [[ "$_use_python2" == "ON" ]]; then
-                depends+=('python2-requests-futures' 'python2-certifi' 'python2-future' 'python2-bottle' 'python2-frozendict' 'python2-waitress' 'python2-regex')
-        fi
+  if [[ "$_use_python2" == "OFF" ]]; then
+    depends+=('python-requests-futures' 'python-certifi' 'python-future' 'python-bottle' 'python-frozendict' 'python-waitress' 'python-regex')
+  elif [[ "$_use_python2" == "ON" ]]; then
+    depends+=('python2-requests-futures' 'python2-certifi' 'python2-future' 'python2-bottle' 'python2-frozendict' 'python2-waitress' 'python2-regex')
+  fi
 fi
 
 if [[ "$_use_system_jedi" == "y" ]]; then
-        if [[ "$_use_python2" == "OFF" ]]; then
-                depends+=('python-jedi' 'python-parso' 'python-numpydoc')
-        elif [[ "$_use_python2" == "ON" ]]; then
-                depends+=('python2-jedi' 'python2-parso' 'python2-numpydoc')
-        fi
+  if [[ "$_use_python2" == "OFF" ]]; then
+    depends+=('python-jedi' 'python-parso' 'python-numpydoc')
+  elif [[ "$_use_python2" == "ON" ]]; then
+    depends+=('python2-jedi' 'python2-parso' 'python2-numpydoc')
+  fi
 fi
 #=========================================================================================================#
 #=========================================================================================================#
@@ -147,25 +147,25 @@ fi
 #=========================================================================================================#
 
 gitprepare() {
-	local cd_dir=$1
-	local git_prefix=$2
-	local c=0
-	for val in "$@" ; do
-		if [ $c -gt 1 ]; then
-			local feed[$c]=$val
-		fi
-		c=$(( c + 1 ))
-	done
+  local cd_dir=$1
+  local git_prefix=$2
+  local c=0
+  for val in "$@" ; do
+    if [ $c -gt 1 ]; then
+      local feed[$c]=$val
+    fi
+    c=$(( c + 1 ))
+  done
 
-	cd "$srcdir/$cd_dir" || exit
+  cd "$srcdir/$cd_dir" || exit
 
-	git submodule init
-	for gitsubvar in "${feed[@]}" ; do
-		git config submodule."$git_prefix$gitsubvar".url "$srcdir/$gitsubvar"
-	done
+  git submodule init
+  for gitsubvar in "${feed[@]}" ; do
+    git config submodule."$git_prefix$gitsubvar".url "$srcdir/$gitsubvar"
+  done
 
-	git submodule update
-	unset -v feed
+  git submodule update
+  unset -v feed
 }
 
 #=========================================================================================================#
@@ -179,228 +179,228 @@ gitprepare() {
 
 prepare() {
 
-	# Add the java completion engine dynamically...
-	if [[ "$_java" == "y" ]]; then
-		msg2 'Parsing out the JDTLS package version from upstream...'
-			local jdtls_package_name="jdt-language-server"
-			local jdtls_milestone=`egrep '^JDTLS_MILESTONE' "$srcdir/ycmd/build.py" | sed -e "s/.* = //g" -e "s/'//g"`
-			local jdtls_buildstamp=`egrep '^JDTLS_BUILD_STAMP' "$srcdir/ycmd/build.py" | sed -e "s/.* = //g" -e "s/'//g"`
+  # Add the java completion engine dynamically...
+  if [[ "$_java" == "y" ]]; then
 
-			if [[ "$jdtls_milestone" != "" ]] && [[ "$jdtls_buildstamp" != "" ]]; then
-				msg2 'JDTLS package version matched. Downloading...'
-				curl -LO http://download.eclipse.org/jdtls/milestones/${jdtls_milestone}/${jdtls_package_name}-${jdtls_milestone}-${jdtls_buildstamp}.tar.gz
-				tar xf ${jdtls_package_name}-${jdtls_milestone}-${jdtls_buildstamp}.tar.gz
-			else
-				error 'Mismatched JDTLS version'
-				exit 1
-			fi
-	fi
+    msg2 'Parsing out the JDTLS package version from upstream...'
+    local jdtls_package_name="jdt-language-server"
+    local jdtls_milestone=`egrep '^JDTLS_MILESTONE' "$srcdir/ycmd/build.py" | sed -e "s/.* = //g" -e "s/'//g"`
+    local jdtls_buildstamp=`egrep '^JDTLS_BUILD_STAMP' "$srcdir/ycmd/build.py" | sed -e "s/.* = //g" -e "s/'//g"`
+    if [[ "$jdtls_milestone" != "" ]] && [[ "$jdtls_buildstamp" != "" ]]; then
+      msg2 'JDTLS package version matched. Downloading...'
+      curl -LO http://download.eclipse.org/jdtls/milestones/"${jdtls_milestone}"/"${jdtls_package_name}"-"${jdtls_milestone}"-"${jdtls_buildstamp}".tar.gz
+      tar xf "${jdtls_package_name}"-"${jdtls_milestone}"-"${jdtls_buildstamp}".tar.gz
+    else
+      error 'Mismatched JDTLS version'
+      exit 1
+    fi
 
+  fi
 
-	msg2 'Setting up Git submodules...'
+  msg2 'Setting up Git submodules...'
 
-	local YouCompleteMe=("requests-futures" "ycmd" "python-future")
-	local YouCompleteMeRequestsDeps=("idna" "python-certifi" "chardet" "urllib3" "requests")
+  local YouCompleteMe=("requests-futures" "ycmd" "python-future")
+  local YouCompleteMeRequestsDeps=("idna" "python-certifi" "chardet" "urllib3" "requests")
 
-	gitprepare "YouCompleteMe" "third_party/" "${YouCompleteMe[@]}"
-	gitprepare "YouCompleteMe" "third_party/requests_deps/" "${YouCompleteMeRequestsDeps[@]}"
+  gitprepare "YouCompleteMe" "third_party/" "${YouCompleteMe[@]}"
+  gitprepare "YouCompleteMe" "third_party/requests_deps/" "${YouCompleteMeRequestsDeps[@]}"
 
-	local ycmd=("bottle" "regex" "python-frozendict" "python-future" "waitress")
+  local ycmd=("bottle" "regex" "python-frozendict" "python-future" "waitress")
 
-	if [[ "$_omnisharp" == "y" ]]; then
-		ycmd+=("OmniSharpServer")
-	fi
+  if [[ "$_omnisharp" == "y" ]]; then
+    ycmd+=("OmniSharpServer")
+  fi
 
-	if [[ "$_rust" == "y" ]]; then
-		ycmd+=("racerd")
-	fi
+  if [[ "$_rust" == "y" ]]; then
+    ycmd+=("racerd")
+  fi
 
-	gitprepare "YouCompleteMe/third_party/ycmd" "third_party/" "${ycmd[@]}"
+  gitprepare "YouCompleteMe/third_party/ycmd" "third_party/" "${ycmd[@]}"
 
-	local ycmdJediDeps=("jedi" "parso" "numpydoc")
-	gitprepare "YouCompleteMe/third_party/ycmd" "third_party/jedi_deps" "${ycmdJediDeps[@]}"
+  local ycmdJediDeps=("jedi" "parso" "numpydoc")
+  gitprepare "YouCompleteMe/third_party/ycmd" "third_party/jedi_deps" "${ycmdJediDeps[@]}"
 
-	local ycmdRequestsDeps=("python-certifi" "chardet" "idna" "requests" "urllib3")
-	gitprepare "YouCompleteMe/third_party/ycmd" "third_party/requests_deps" "${ycmdRequestsDeps[@]}"
+  local ycmdRequestsDeps=("python-certifi" "chardet" "idna" "requests" "urllib3")
+  gitprepare "YouCompleteMe/third_party/ycmd" "third_party/requests_deps" "${ycmdRequestsDeps[@]}"
 
-	if [[ "$_gocode" == "y" ]]; then
-                gitprepare "YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/mdempsky" "" "gocode"
-                gitprepare "YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/rogpeppe" "" "godef"
-	fi
+  if [[ "$_gocode" == "y" ]]; then
+    gitprepare "YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/mdempsky" "" "gocode"
+    gitprepare "YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/rogpeppe" "" "godef"
+  fi
 
-	if [[ "$_omnisharp" == "y" ]]; then
-		local OmniSharpServer=("NRefactory" "cecil")
-		gitprepare "YouCompleteMe/third_party/ycmd/third_party/OmniSharpServer" "" "${OmniSharpServer[@]}"
-	fi
+  if [[ "$_omnisharp" == "y" ]]; then
+    local OmniSharpServer=("NRefactory" "cecil")
+    gitprepare "YouCompleteMe/third_party/ycmd/third_party/OmniSharpServer" "" "${OmniSharpServer[@]}"
+  fi
 }
 
 
 build() {
-	msg2 'Purging unneeded files...'
-	rm -r "$srcdir/YouCompleteMe/python/ycm/tests"
+  msg2 'Purging unneeded files...'
+  rm -r "$srcdir/YouCompleteMe/python/ycm/tests"
 
-	msg2 'Building ycmd...' # BuildYcmdLibs()
-	mkdir -p "$srcdir/ycmd_build"
-	cd "$srcdir/ycmd_build" || exit
-	cmake -G "Unix Makefiles" -DUSE_PYTHON2=$_use_python2 -DUSE_SYSTEM_LIBCLANG="$_use_system_clang" . "$srcdir/YouCompleteMe/third_party/ycmd/cpp"
-	make ycm_core
+  msg2 'Building ycmd...' # BuildYcmdLibs()
+  mkdir -p "$srcdir/ycmd_build"
+  cd "$srcdir/ycmd_build" || exit
+  cmake -G "Unix Makefiles" -DUSE_PYTHON2=$_use_python2 -DUSE_SYSTEM_LIBCLANG="$_use_system_clang" . "$srcdir/YouCompleteMe/third_party/ycmd/cpp"
+  make ycm_core
 
-	if [[ "$_omnisharp" == "y" ]]; then
-		msg2 'Building OmniSharp completer...' # BuildOmniSharp()
-		cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/OmniSharpServer" || exit
-		xbuild /property:Configuration=Release
-	else
-		msg2 'Skipping OmniSharp completer...'
-	fi
+  if [[ "$_omnisharp" == "y" ]]; then
+    msg2 'Building OmniSharp completer...' # BuildOmniSharp()
+    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/OmniSharpServer" || exit
+    xbuild /property:Configuration=Release
+  else
+    msg2 'Skipping OmniSharp completer...'
+  fi
 
-	if [[ "$_gocode" == "y" ]]; then
-		export GOPATH="$GOPATH:$srcdir/YouCompleteMe/third_party/ycmd/third_party/go"
-		msg2 'Building Gocode completer...' # BuildGoCode()
-		cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode" || exit
-		go build
-		cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef" || exit
-		go build
-	else
-		msg2 'Skipping Gocode completer...'
-	fi
+  if [[ "$_gocode" == "y" ]]; then
+    export GOPATH="$GOPATH:$srcdir/YouCompleteMe/third_party/ycmd/third_party/go"
+    msg2 'Building Gocode completer...' # BuildGoCode()
+    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode" || exit
+    go build
+    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef" || exit
+    go build
+  else
+    msg2 'Skipping Gocode completer...'
+  fi
 
-	if [[ "$_rust" == "y" ]]; then
-		msg2 'Building Rust completer...' # BuildRacerd()
-		cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/racerd" || exit
-		cargo build --release
-	else
-		msg2 'Skipping Rust completer...'
-	fi
+  if [[ "$_rust" == "y" ]]; then
+    msg2 'Building Rust completer...' # BuildRacerd()
+    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/racerd" || exit
+    cargo build --release
+  else
+    msg2 'Skipping Rust completer...'
+  fi
 
-	if [[ "$_tern" == "y" ]]; then
-		msg2 'Building Tern completer...' # SetUpTern()
-		cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tern_runtime" || exit
-		if [[ "$_use_python2" == "ON" ]]; then
-			npm install --production --python=python2
-		else
-			npm install --production --python=python3
-		fi
-	else
-		msg2 'Skipping Tern completer...'
-	fi
+  if [[ "$_tern" == "y" ]]; then
+    msg2 'Building Tern completer...' # SetUpTern()
+    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tern_runtime" || exit
+    if [[ "$_use_python2" == "ON" ]]; then
+      npm install --production --python=python2
+    else
+      npm install --production --python=python3
+    fi
+  else
+    msg2 'Skipping Tern completer...'
+  fi
 
-	if [[ "$_java" == "y" ]]; then
-		# Remove stale java completer data if any
-		rm -rf "$srcdir/YouCompleteMe/third_party/ycmd/third_party/eclipse.jdt.ls/target/repository"
-		mkdir -p "$srcdir/YouCompleteMe/third_party/ycmd/third_party/eclipse.jdt.ls/target/repository"
-		mv "$srcdir"/{config_linux,features,plugins} "$srcdir/YouCompleteMe/third_party/ycmd/third_party/eclipse.jdt.ls/target/repository"
-	fi
+  if [[ "$_java" == "y" ]]; then
+    # Remove stale java completer data if any
+    rm -rf "$srcdir/YouCompleteMe/third_party/ycmd/third_party/eclipse.jdt.ls/target/repository"
+    mkdir -p "$srcdir/YouCompleteMe/third_party/ycmd/third_party/eclipse.jdt.ls/target/repository"
+    mv "$srcdir"/{config_linux,features,plugins} "$srcdir/YouCompleteMe/third_party/ycmd/third_party/eclipse.jdt.ls/target/repository"
+  fi
 }
 
 
 package() {
 
-	local vimfiles_dir=usr/share/vim/vimfiles
-	if [[ "$_neovim" == "y" ]]; then
-		vimfiles_dir=usr/share/nvim/runtime
-	fi
+  local vimfiles_dir=usr/share/vim/vimfiles
+  if [[ "$_neovim" == "y" ]]; then
+    vimfiles_dir=usr/share/nvim/runtime
+  fi
 
-        mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
+  mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
 
-	cp -r "$srcdir/YouCompleteMe/third_party/ycmd/"{ycmd,ycm_core.so,CORE_VERSION} \
-		"$pkgdir/$vimfiles_dir/third_party/ycmd"
+  cp -r "$srcdir/YouCompleteMe/third_party/ycmd/"{ycmd,ycm_core.so,CORE_VERSION} \
+    "$pkgdir/$vimfiles_dir/third_party/ycmd"
 
-	cp -r "$srcdir/YouCompleteMe/"{autoload,doc,plugin,python} \
-		"$pkgdir/$vimfiles_dir"
+  cp -r "$srcdir/YouCompleteMe/"{autoload,doc,plugin,python} \
+    "$pkgdir/$vimfiles_dir"
 
-        if [[ "$_use_system_python" == "n" ]]; then
-                mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
-                mkdir -p "$pkgdir/$vimfiles_dir/third_party/requests_deps"
+  if [[ "$_use_system_python" == "n" ]]; then
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/requests_deps"
 
-                cp -r "$srcdir/YouCompleteMe/third_party/"{pythonfutures,requests-futures,python-future} \
-                        "$pkgdir/$vimfiles_dir/third_party"
-                cp -r "$srcdir/YouCompleteMe/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
-                        "$pkgdir/$vimfiles_dir/third_party/requests_deps"
+    cp -r "$srcdir/YouCompleteMe/third_party/"{pythonfutures,requests-futures,python-future} \
+      "$pkgdir/$vimfiles_dir/third_party"
+    cp -r "$srcdir/YouCompleteMe/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
+      "$pkgdir/$vimfiles_dir/third_party/requests_deps"
 
-                cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,cregex,frozendict,python-future,waitress} \
-                        "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
-                cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
-                        "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,cregex,frozendict,python-future,waitress} \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
 
-        elif [[ "$_use_system_python" == "y" ]]; then
-                cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/clang" \
-                        "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
-        fi
-        
-        if [[ "$_use_system_jedi" == "n" ]]; then
-                cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/jedi_deps" \
-                        "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/"
-        fi
+  elif [[ "$_use_system_python" == "y" ]]; then
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/clang" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
+  fi
+  
+  if [[ "$_use_system_jedi" == "n" ]]; then
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/jedi_deps/"{jedi,parso,numpydoc}
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/jedi_deps/jedi/jedi" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/jedi_deps/jedi/"
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/jedi_deps/parso/parso" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/jedi_deps/parso/"
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/jedi_deps/numpydoc/numpydoc" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/jedi_deps/numpydoc/"
+  fi
 
-	if [[ "$_omnisharp" == "y" ]]; then
-		mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/OmniSharpServer/OmniSharp/bin/Release"
-		cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/OmniSharpServer/OmniSharp/bin/Release" \
-			"$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/OmniSharpServer/OmniSharp/bin"
-	fi
+  if [[ "$_omnisharp" == "y" ]]; then
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/OmniSharpServer/OmniSharp/bin/Release"
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/OmniSharpServer/OmniSharp/bin/Release" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/OmniSharpServer/OmniSharp/bin"
+  fi
 
-	if [[ "$_gocode" == "y" ]]; then
-		mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode"
-		mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef"
-		cp "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode/gocode" \
-		"$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode/gocode"
-		cp "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef/godef" \
-		"$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef/godef"
-	fi
+  if [[ "$_gocode" == "y" ]]; then
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode"
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef"
+      cp "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode/gocode" \
+    "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode/gocode"
+      cp "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef/godef" \
+    "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef/godef"
+  fi
 
-	if [[ "$_rust" == "y" ]]; then
-		mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/racerd/target/release"
-		cp    "$srcdir/YouCompleteMe/third_party/ycmd/third_party/racerd/target/release/racerd" \
-			"$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/racerd/target/release/racerd"
-	fi
+  if [[ "$_rust" == "y" ]]; then
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/racerd/target/release"
+    cp    "$srcdir/YouCompleteMe/third_party/ycmd/third_party/racerd/target/release/racerd" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/racerd/target/release/racerd"
+  fi
 
-	if [[ "$_tern" == "y" ]]; then
-		cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tern_runtime" \
-			"$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
-	fi
+  if [[ "$_tern" == "y" ]]; then
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tern_runtime" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
+  fi
 
-	if [[ "$_typescript" == "y" ]]; then
-	  cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tsserver" \
-		  "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
-	fi
+  if [[ "$_java" == "y" ]]; then
+    mv "$srcdir/YouCompleteMe/third_party/ycmd/third_party/eclipse.jdt.ls" "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
+    # Force the java completion engine to create its workspace at /tmp instead which is writeable by every user
+    ln -sf /tmp "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/eclipse.jdt.ls/workspace"
+  fi
 
-	if [[ "$_java" == "y" ]]; then
-		mv "$srcdir/YouCompleteMe/third_party/ycmd/third_party/eclipse.jdt.ls" "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
-		# Force the java completion engine to create its workspace at /tmp instead which is writeable by every user
-		ln -sf /tmp "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/eclipse.jdt.ls/workspace"
-	fi
+  # Remove all the unnecessary git repositories
+  find "$pkgdir" -name '.git*' -exec rm -fr {} +
 
-	# Remove all the unnecessary git repositories
-        find "$pkgdir" -name '.git*' -exec rm -fr {} +
+  # Remove test files
+  if [[ "$_tests" == "n" ]]; then
+    find "$pkgdir" -name tests -exec rm -fr {} +
+    find "$pkgdir" -name 'test' -exec rm -fr {} +
+  fi
 
-	# Remove test files
-	if [[ "$_tests" == "n" ]]; then
-                find "$pkgdir" -name tests -exec rm -fr {} +
-                find "$pkgdir" -name 'test' -exec rm -fr {} +
-        fi
+  # Remove any file we cannot compile using a specfic python version
+  if [[ "$_use_python2" == "ON" ]]; then
+    :
+  else
+    if [[ "$_use_system_python" == "n" ]]; then
+      rm -r "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/bottle/plugins/werkzeug/bottle_werkzeug.py"
+      rm -r "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/bottle/plugins/sqlite/bottle_sqlite.py"
+    fi  
+  fi
 
-	# Remove any file we cannot compile using a specfic python version
-	if [[ "$_use_python2" == "ON" ]]; then
-		:
-	else
-                if [[ "$_use_system_python" == "n" ]]; then
-                        rm -r "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/bottle/plugins/werkzeug/bottle_werkzeug.py"
-                        rm -r "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/bottle/plugins/sqlite/bottle_sqlite.py"
-                fi  
-	fi
+  # Remove unneeded docs
+  if [[ "$_docs" == "n" ]]; then
+    find "$pkgdir" -name docs -exec rm -fr {} +
+    find "$pkgdir/$vimfiles_dir/third_party/" -name doc -exec rm -fr {} +
+  fi
 
-	# Remove unneeded docs
-	if [[ "$_docs" == "n" ]]; then
-                find "$pkgdir" -name docs -exec rm -fr {} +
-                find "$pkgdir/$vimfiles_dir/third_party/" -name doc -exec rm -fr {} +
-        fi
-
-	# Finally compile all the python files to bytecode.
-        # not sure why this block causes the pkg function to fail unless you add "|| :"
-	if [[ "$_use_python2" == "ON" ]]; then
-		python2 -m compileall "$pkgdir" || :
-	else
-		python3 -m compileall "$pkgdir" || :
-	fi
+  # Finally compile all the python files to bytecode.
+  # not sure why this block causes the pkg function to fail unless you add "|| :"
+  if [[ "$_use_python2" == "ON" ]]; then
+    python2 -m compileall "$pkgdir" || :
+  else
+    python3 -m compileall "$pkgdir" || :
+  fi
 
 }
 
