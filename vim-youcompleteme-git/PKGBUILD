@@ -19,16 +19,19 @@
 #=========================================================================================================#
 #                                          Build Options                                                  #
 #=========================================================================================================#
-_omnisharp="y"
+# _omnisharp="y" # OmniSharpServer deleted
 _gocode="y"
+# _rust="y" # racerd deleted
 _rust="y"
-_tern="y"
+_javascript="y"
 _java="n"
 _docs="n"
 _tests="n"
 _use_system_clang="ON"
 _use_python2="OFF"
 _use_system_python="y"
+_use_OmniSharp_Roslyn="y"
+_use_system_OmniSharp_Roslyn="y"
 _use_system_jedi="y"
 
 _neovim="$NEOVIM_YOUCOMPLETEME"
@@ -41,7 +44,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2532.d556a43c
+pkgver=r2535.04c35051
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -78,40 +81,33 @@ sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP
 #=========================================================================================================#
 
 
-
 #=========================================================================================================#
 #                                     Applying PKBUILD Build Options                                      #
 #=========================================================================================================#
 
+if [[ "$_use_OmniSharp_Roslyn" == "y" ]];then
+  if [[ "$_use_system_OmniSharp_Roslyn" == "n" ]];then
+    source+=('https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.33.0/omnisharp-mono.tar.gz')
+    noextract=('omnisharp-mono.tar.gz')
+    sha256sums+=('c3bd370b0e31838418756f3879269b224b1920d6f3527c8f711d661dfc008c8c')
+  elif [[ "$_use_system_OmniSharp_Roslyn" == "y" ]];then
+    depends+=('omnisharp-roslyn')
+  fi
+fi
+
 if [[ "$_gocode" == "y" ]];then
   # ycmd
-  source+=('git+https://github.com/mdempsky/gocode.git')
-  source+=('git+https://github.com/rogpeppe/godef.git')
-  sha256sums+=('SKIP')
+  source+=('git+https://go.googlesource.com/tools.git')
   sha256sums+=('SKIP')
   makedepends+=('go')
 fi
 
-
-if [[ "$_omnisharp" == "y" ]]; then
-  source+=( 'git+https://github.com/nosami/OmniSharpServer.git'       #ycmd
-      'git+https://github.com/icsharpcode/NRefactory.git'       #OmniSharpServer
-      'git+https://github.com/jbevain/cecil.git'                #OmniSharpServer
-      )
-  sha256sums+=('SKIP' 'SKIP' 'SKIP')
-  depends+=('mono')
-  makedepends+=('mono')
-fi
-
-if [[ "$_rust" == "y" ]]; then
+if [[ "$_rust" == "y" ]];then
   # ycmd
-  source+=( 'git+https://github.com/jwilm/racerd.git')
-  sha256sums+=('SKIP')
-  depends+=('rust')
-  makedepends+=('cargo')
+  depends+=('rustup')
 fi
 
-if [[ "$_tern" == "y" ]]; then
+if [[ "$_javascript" == "y" ]]; then
   # ycmd
   makedepends+=('npm')
 fi
@@ -207,14 +203,6 @@ prepare() {
 
   local ycmd=("bottle" "regex" "python-frozendict" "python-future" "waitress")
 
-  if [[ "$_omnisharp" == "y" ]]; then
-    ycmd+=("OmniSharpServer")
-  fi
-
-  if [[ "$_rust" == "y" ]]; then
-    ycmd+=("racerd")
-  fi
-
   gitprepare "YouCompleteMe/third_party/ycmd" "third_party/" "${ycmd[@]}"
 
   local ycmdJediDeps=("jedi" "parso" "numpydoc")
@@ -224,13 +212,15 @@ prepare() {
   gitprepare "YouCompleteMe/third_party/ycmd" "third_party/requests_deps" "${ycmdRequestsDeps[@]}"
 
   if [[ "$_gocode" == "y" ]]; then
-    gitprepare "YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/mdempsky" "" "gocode"
-    gitprepare "YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/rogpeppe" "" "godef"
+    gitprepare "YouCompleteMe/third_party/ycmd/third_party/go/src/golang.org/x" "" "tools"
   fi
 
-  if [[ "$_omnisharp" == "y" ]]; then
-    local OmniSharpServer=("NRefactory" "cecil")
-    gitprepare "YouCompleteMe/third_party/ycmd/third_party/OmniSharpServer" "" "${OmniSharpServer[@]}"
+  if [[ "$_use_OmniSharp_Roslyn" == "y" ]];then
+    if [[ "$_use_system_OmniSharp_Roslyn" == "n" ]];then
+      mkdir -p "$srcdir/omnisharp-roslyn"
+      cd "$srcdir/omnisharp-roslyn" && tar xf ../omnisharp-mono.tar.gz .
+      noextract=('omnisharp-mono.tar.gz')
+    fi
   fi
 }
 
@@ -245,40 +235,48 @@ build() {
   cmake -G "Unix Makefiles" -DUSE_PYTHON2=$_use_python2 -DUSE_SYSTEM_LIBCLANG="$_use_system_clang" . "$srcdir/YouCompleteMe/third_party/ycmd/cpp"
   make ycm_core
 
-  if [[ "$_omnisharp" == "y" ]]; then
-    msg2 'Building OmniSharp completer...' # BuildOmniSharp()
-    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/OmniSharpServer" || exit
-    xbuild /property:Configuration=Release
-  else
-    msg2 'Skipping OmniSharp completer...'
+  if [[ "$_use_system_python" == "n" ]]; then
+    mkdir -p "$srcdir/regex_build"
+    cd "$srcdir/regex_build" || exit
+    cmake -G "Unix Makefiles" -DUSE_PYTHON2=$_use_python2 -DUSE_SYSTEM_LIBCLANG="$_use_system_clang" . "$srcdir/YouCompleteMe/third_party/ycmd/third_party/cregex"
+    make _regex
+  fi
+
+  if [[ "$_rust" == "y" ]]; then
+    mkdir -p "$srcdir/rls_build"
+    export RUSTUP_HOME="$srcdir/rls_build"
+    rustup toolchain install nightly
+    rustup default nightly
+    rustup component add rls rust-analysis rust-src
   fi
 
   if [[ "$_gocode" == "y" ]]; then
-    export GOPATH="$GOPATH:$srcdir/YouCompleteMe/third_party/ycmd/third_party/go"
+    # export GOPATH="$GOPATH:$srcdir/YouCompleteMe/third_party/ycmd/third_party/go"
     msg2 'Building Gocode completer...' # BuildGoCode()
-    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode" || exit
-    go build
-    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef" || exit
+    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/golang.org/x/tools/cmd/gopls" || exit
     go build
   else
     msg2 'Skipping Gocode completer...'
   fi
 
-  if [[ "$_rust" == "y" ]]; then
-    msg2 'Building Rust completer...' # BuildRacerd()
-    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/racerd" || exit
-    cargo build --release
-  else
-    msg2 'Skipping Rust completer...'
-  fi
+  if [[ "$_javascript" == "y" ]]; then
 
-  if [[ "$_tern" == "y" ]]; then
     msg2 'Building Tern completer...' # SetUpTern()
     cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tern_runtime" || exit
+
     if [[ "$_use_python2" == "ON" ]]; then
       npm install --production --python=python2
     else
       npm install --production --python=python3
+    fi
+
+    cd "$srcdir/YouCompleteMe/third_party/ycmd" || exit
+    mkdir -p "third_party/tsserver" || exit
+
+    if [[ "$_use_python2" == "ON" ]]; then
+      npm install -g --prefix third_party/tsserver typescript --python=python2
+    else
+      npm install -g --prefix third_party/tsserver typescript --python=python3
     fi
   else
     msg2 'Skipping Tern completer...'
@@ -307,6 +305,19 @@ package() {
 
   cp -r "$srcdir/YouCompleteMe/"{autoload,doc,plugin,python} \
     "$pkgdir/$vimfiles_dir"
+
+  if [[ "$_use_OmniSharp_Roslyn" == "y" ]];then
+    if [[ "$_use_system_OmniSharp_Roslyn" == "n" ]];then
+      cp -r "$srcdir/omnisharp-roslyn" \
+        "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/"
+    fi
+  fi
+
+  if [[ "$_rust" == "y" ]]; then
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/rls"
+    cp -r "$srcdir/rls_build/toolchains/nightly-"*"/"{bin,etc,lib,share} \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/rls"
+  fi
 
   if [[ "$_use_system_python" == "n" ]]; then
     mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
@@ -337,29 +348,14 @@ package() {
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/jedi_deps/numpydoc/"
   fi
 
-  if [[ "$_omnisharp" == "y" ]]; then
-    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/OmniSharpServer/OmniSharp/bin/Release"
-    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/OmniSharpServer/OmniSharp/bin/Release" \
-      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/OmniSharpServer/OmniSharp/bin"
-  fi
-
   if [[ "$_gocode" == "y" ]]; then
-    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode"
-    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef"
-      cp "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode/gocode" \
-    "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/mdempsky/gocode/gocode"
-      cp "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef/godef" \
-    "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/github.com/rogpeppe/godef/godef"
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/golang.org/x/tools/cmd/gopls"
+    cp "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/golang.org/x/tools/cmd/gopls/gopls" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/golang.org/x/tools/cmd/gopls/gopls"
   fi
 
-  if [[ "$_rust" == "y" ]]; then
-    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/racerd/target/release"
-    cp    "$srcdir/YouCompleteMe/third_party/ycmd/third_party/racerd/target/release/racerd" \
-      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/racerd/target/release/racerd"
-  fi
-
-  if [[ "$_tern" == "y" ]]; then
-    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tern_runtime" \
+  if [[ "$_javascript" == "y" ]]; then
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{tern_runtime,tsserver} \
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
   fi
 
