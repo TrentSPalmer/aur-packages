@@ -21,9 +21,9 @@
 #=========================================================================================================#
 # _omnisharp="y" # OmniSharpServer deleted
 _gocode="y"
-# _rust="y" # racerd deleted
 _rust="y"
-_javascript="y"
+_tern="y"
+_typescript="y"
 _java="n"
 _docs="n"
 _tests="n"
@@ -44,7 +44,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2537.fa92f40d
+pkgver=r2538.afa2ea03
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -107,7 +107,7 @@ if [[ "$_rust" == "y" ]];then
   depends+=('rustup')
 fi
 
-if [[ "$_javascript" == "y" ]]; then
+if [[ "$_tern" == "y" ]]; then
   # ycmd
   makedepends+=('npm')
 fi
@@ -245,8 +245,8 @@ build() {
   if [[ "$_rust" == "y" ]]; then
     mkdir -p "$srcdir/rls_build"
     export RUSTUP_HOME="$srcdir/rls_build"
-    rustup toolchain install nightly
-    rustup default nightly
+    rustup toolchain install nightly-2019-07-18
+    rustup default nightly-2019-07-18
     rustup component add rls rust-analysis rust-src
   fi
 
@@ -259,17 +259,7 @@ build() {
     msg2 'Skipping Gocode completer...'
   fi
 
-  if [[ "$_javascript" == "y" ]]; then
-
-    msg2 'Building Tern completer...' # SetUpTern()
-    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tern_runtime" || exit
-
-    if [[ "$_use_python2" == "ON" ]]; then
-      npm install --production --python=python2
-    else
-      npm install --production --python=python3
-    fi
-
+  if [[ "$_typescript" == "y" ]]; then
     cd "$srcdir/YouCompleteMe/third_party/ycmd" || exit
     mkdir -p "third_party/tsserver" || exit
 
@@ -279,8 +269,23 @@ build() {
       npm install -g --prefix third_party/tsserver typescript --python=python3
     fi
   else
+    msg2 'Skipping typescript completer...'
+  fi
+
+  if [[ "$_tern" == "y" ]]; then
+    msg2 'Building Tern completer...' # SetUpTern()
+    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tern_runtime" || exit
+
+    if [[ "$_use_python2" == "ON" ]]; then
+      npm install --production --python=python2
+    else
+      npm install --production --python=python3
+    fi
+
+  else
     msg2 'Skipping Tern completer...'
   fi
+
 
   if [[ "$_java" == "y" ]]; then
     # Remove stale java completer data if any
@@ -354,8 +359,13 @@ package() {
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/golang.org/x/tools/cmd/gopls/gopls"
   fi
 
-  if [[ "$_javascript" == "y" ]]; then
-    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{tern_runtime,tsserver} \
+  if [[ "$_tern" == "y" ]]; then
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tern_runtime" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
+  fi
+
+  if [[ "$_typescript" == "y" ]]; then
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/tsserver" \
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
   fi
 
