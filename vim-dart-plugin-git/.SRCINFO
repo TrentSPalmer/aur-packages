@@ -1,6 +1,6 @@
 pkgbase = vim-dart-plugin-git
 	pkgdesc = Syntax highlighting for Dart in Vim
-	pkgver = r87.8ffc3e2
+	pkgver = r92.f8486e5
 	pkgrel = 1
 	url = https://github.com/dart-lang/dart-vim-plugin
 	arch = any

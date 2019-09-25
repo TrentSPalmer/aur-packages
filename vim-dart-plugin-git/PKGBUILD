@@ -4,7 +4,7 @@
 # Contributor: Sven-Hendrik Haase <sh@lutzhaase.com>
 
 pkgname=vim-dart-plugin-git
-pkgver=r87.8ffc3e2
+pkgver=r92.f8486e5
 pkgrel=1
 pkgdesc='Syntax highlighting for Dart in Vim'
 arch=('any')
