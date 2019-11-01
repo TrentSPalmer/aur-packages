@@ -44,7 +44,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2548.94cfacd1
+pkgver=r2563.3620fb55
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -60,9 +60,10 @@ makedepends=('cmake' 'git' 'make' 'curl')
 install=install
 source=(
 'git+https://github.com/Valloric/YouCompleteMe.git' #ycm
-'git+https://github.com/Valloric/ycmd.git'          #ycm
+'git+https://github.com/ycm-core/ycmd.git'          #ycm
 'git+https://github.com/davidhalter/jedi.git'             #jedi
 'git+https://github.com/davidhalter/parso.git'            #jedi
+'git+https://github.com/davidhalter/typeshed.git'            #jedi
 'git+https://github.com/numpy/numpydoc'            #jedi
 'git+https://github.com/ross/requests-futures.git'  #ycm
 'git+https://github.com/requests/requests.git'  #ycmd
@@ -76,7 +77,7 @@ source=(
 'git+https://github.com/Pylons/waitress.git'              #ycmd,jediHTTP
 'git+https://github.com/ycm-core/regex.git'  #ycmd
 )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 #=========================================================================================================#
 #=========================================================================================================#
 
