@@ -3,7 +3,7 @@
 # Previous maintainer: Elena ``of Valhalla'' Grandi <elena.valhalla@gmail.com>
 
 pkgname=python-numpydoc
-pkgver=0.9.1
+pkgver=0.9.2
 pkgrel=1
 pkgdesc="Sphinx extension to support docstrings in Numpy format"
 arch=('any')
@@ -13,7 +13,7 @@ depends=('python-sphinx')
 backup=()
 options=(!emptydirs)
 source=("$pkgname-$pkgver.tar.gz::${url}/archive/v${pkgver}.tar.gz")
-sha256sums=('b480ef5a7ed680a2ecb1615c44a5becb8eacb2be94b58b200340f0a2a458b854')
+sha512sums=('765f096cf48710c80fa0e131ce8e06de9d61f214829924b3c109d6b938dfa011bbf79965e07e49640c11f74ac262d3fef176ae4f651016ec81d5bc252141b9eb')
 
 package() {
 
@@ -26,4 +26,3 @@ package() {
   chmod 644 "$pkgdir"/usr/lib/python*/site-packages/numpydoc-$pkgver-py*.egg-info/*
 
 }
-
