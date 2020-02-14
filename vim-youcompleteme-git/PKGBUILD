@@ -29,10 +29,10 @@ _docs="n"
 _tests="n"
 _use_system_clang="ON"
 _use_python2="OFF"
-_use_system_python="y"
+_use_system_python="n"  # seems broken
 _use_OmniSharp_Roslyn="y"
 _use_system_OmniSharp_Roslyn="y"
-_use_system_jedi="y"
+_use_system_jedi="n"   # seems broken
 
 _neovim="$NEOVIM_YOUCOMPLETEME"
 #=========================================================================================================#
@@ -44,7 +44,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2604.124661f2
+pkgver=r2623.52632f13
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -72,11 +72,10 @@ source=(
 'git+https://github.com/chardet/chardet.git'  #requests
 'git+https://github.com/urllib3/urllib3.git'  #requests
 'git+https://github.com/bottlepy/bottle.git'  #ycmd
-'git+https://github.com/PythonCharmers/python-future.git' #ycmd
 'git+https://github.com/Pylons/waitress.git'              #ycmd,jediHTTP
 'git+https://github.com/ycm-core/regex.git'  #ycmd
 )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 #=========================================================================================================#
 #=========================================================================================================#
 
@@ -120,9 +119,9 @@ if [[ "$_use_system_python" == "n" ]]; then
   fi
 elif [[ "$_use_system_python" == "y" ]]; then
   if [[ "$_use_python2" == "OFF" ]]; then
-    depends+=('python-requests-futures' 'python-certifi' 'python-future' 'python-bottle' 'python-waitress' 'python-regex')
+    depends+=('python-requests-futures' 'python-certifi' 'python-bottle' 'python-waitress' 'python-regex')
   elif [[ "$_use_python2" == "ON" ]]; then
-    depends+=('python2-requests-futures' 'python2-certifi' 'python2-future' 'python2-bottle' 'python2-waitress' 'python2-regex')
+    depends+=('python2-requests-futures' 'python2-certifi' 'python2-bottle' 'python2-waitress' 'python2-regex')
   fi
 fi
 
@@ -195,13 +194,13 @@ prepare() {
 
   msg2 'Setting up Git submodules...'
 
-  local YouCompleteMe=("requests-futures" "ycmd" "python-future")
+  local YouCompleteMe=("requests-futures" "ycmd")
   local YouCompleteMeRequestsDeps=("idna" "python-certifi" "chardet" "urllib3" "requests")
 
   gitprepare "YouCompleteMe" "third_party/" "${YouCompleteMe[@]}"
   gitprepare "YouCompleteMe" "third_party/requests_deps/" "${YouCompleteMeRequestsDeps[@]}"
 
-  local ycmd=("bottle" "regex" "python-future" "waitress")
+  local ycmd=("bottle" "regex" "waitress")
 
   gitprepare "YouCompleteMe/third_party/ycmd" "third_party/" "${ycmd[@]}"
 
@@ -328,12 +327,12 @@ package() {
     mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
     mkdir -p "$pkgdir/$vimfiles_dir/third_party/requests_deps"
 
-    cp -r "$srcdir/YouCompleteMe/third_party/"{pythonfutures,requests-futures,python-future} \
+    cp -r "$srcdir/YouCompleteMe/third_party/requests-futures" \
       "$pkgdir/$vimfiles_dir/third_party"
     cp -r "$srcdir/YouCompleteMe/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
       "$pkgdir/$vimfiles_dir/third_party/requests_deps"
 
-    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,cregex,python-future,waitress} \
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,cregex,waitress} \
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
     cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
