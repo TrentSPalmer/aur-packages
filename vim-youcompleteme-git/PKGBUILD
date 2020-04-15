@@ -32,7 +32,8 @@ _use_python2="OFF"
 _use_system_python="n"  # seems broken
 _use_OmniSharp_Roslyn="y"
 _use_system_OmniSharp_Roslyn="y"
-_use_system_jedi="n"   # seems broken
+_use_system_jedi="y"
+_use_system_python_watchdog="n"
 
 _neovim="$NEOVIM_YOUCOMPLETEME"
 #=========================================================================================================#
@@ -44,7 +45,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2648.97150c0b
+pkgver=r2659.7080933e
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -74,8 +75,11 @@ source=(
 'git+https://github.com/bottlepy/bottle.git'  #ycmd
 'git+https://github.com/Pylons/waitress.git'              #ycmd,jediHTTP
 'git+https://github.com/ycm-core/regex.git'  #ycmd
+'git+https://github.com/gorakhargosh/watchdog' 
+'git+https://github.com/gorakhargosh/pathtools' 
+'git+https://github.com/mitsuhiko/flask-sphinx-themes.git' 
 )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 #=========================================================================================================#
 #=========================================================================================================#
 
@@ -130,6 +134,14 @@ if [[ "$_use_system_jedi" == "y" ]]; then
     depends+=('python-jedi' 'python-parso' 'python-numpydoc')
   elif [[ "$_use_python2" == "ON" ]]; then
     depends+=('python2-jedi' 'python2-parso' 'python2-numpydoc')
+  fi
+fi
+
+if [[ "$_use_system_python_watchdog" == "y" ]]; then
+  if [[ "$_use_python2" == "OFF" ]]; then
+    depends+=('python-watchdog' 'python-pathtools' 'python-flask-sphinx-themes')
+  elif [[ "$_use_python2" == "ON" ]]; then
+    depends+=('python2-watchdog' 'python2-pathtools')
   fi
 fi
 #=========================================================================================================#
@@ -210,6 +222,12 @@ prepare() {
   local ycmdRequestsDeps=("python-certifi" "chardet" "idna" "requests" "urllib3")
   gitprepare "YouCompleteMe/third_party/ycmd" "third_party/requests_deps" "${ycmdRequestsDeps[@]}"
 
+  local ycmdWatchdogDeps=("watchdog" "pathtools")
+  gitprepare "YouCompleteMe/third_party/ycmd" "third_party/watchdog_deps" "${ycmdWatchdogDeps[@]}"
+
+  local ycmdPathtools_themes=("flask-sphinx-themes")
+  gitprepare "YouCompleteMe/third_party/ycmd/third_party/watchdog_deps" "pathtools/docs/source" "${ycmdPathtools_themes[@]}"
+
   if [[ "$_gocode" == "y" ]]; then
     gitprepare "YouCompleteMe/third_party/ycmd/third_party/go/src/golang.org/x" "" "tools"
   fi
@@ -241,6 +259,11 @@ build() {
     make _regex
   fi
 
+  if [[ "$_use_system_python" == "n" ]]; then
+    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/watchdog_deps/watchdog" || { echo "cant cd to watchdog" ; exit ; }
+    python setup.py build --build-base="build/3" --build-lib="build/lib3" || { echo "fail build watchdog" ; exit ; }
+  fi
+
   if [[ "$_rust" == "y" ]]; then
     mkdir -p "$srcdir/rls_build"
     export RUSTUP_HOME="$srcdir/rls_build"
@@ -252,7 +275,7 @@ build() {
   if [[ "$_gocode" == "y" ]]; then
     # export GOPATH="$GOPATH:$srcdir/YouCompleteMe/third_party/ycmd/third_party/go"
     msg2 'Building Gocode completer...' # BuildGoCode()
-    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/golang.org/x/tools/cmd/gopls" || exit
+    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/golang.org/x/tools/gopls" || exit
     go build
   else
     msg2 'Skipping Gocode completer...'
@@ -351,11 +374,22 @@ package() {
     cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/jedi_deps/numpydoc/numpydoc" \
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/jedi_deps/numpydoc/"
   fi
+  
+  if [[ "$_use_system_python_watchdog" == "n" ]]; then
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/"{pathtools,watchdog}
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/watchdog_deps/pathtools/pathtools" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/pathtools/"
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/watchdog_deps/watchdog" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/"
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/pathtools/docs/source"
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/watchdog_deps/pathtools/docs/source/_themes" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/pathtools/docs/source"
+  fi
 
   if [[ "$_gocode" == "y" ]]; then
-    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/golang.org/x/tools/cmd/gopls"
-    cp "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/golang.org/x/tools/cmd/gopls/gopls" \
-      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/golang.org/x/tools/cmd/gopls/gopls"
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/golang.org/x/tools/gopls"
+    cp "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/golang.org/x/tools/gopls/gopls" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/golang.org/x/tools/gopls/gopls"
   fi
 
   if [[ "$_tern" == "y" ]]; then
@@ -395,7 +429,7 @@ package() {
 
   # Remove unneeded docs
   if [[ "$_docs" == "n" ]]; then
-    find "$pkgdir" -name docs -exec rm -fr {} +
+    # find "$pkgdir" -name docs -exec rm -fr {} + # can't do this anymore because flask-sphinx-themes
     find "$pkgdir/$vimfiles_dir/third_party/" -name doc -exec rm -fr {} +
   fi
 
