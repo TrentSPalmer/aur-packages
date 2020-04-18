@@ -20,7 +20,8 @@
 #                                          Build Options                                                  #
 #=========================================================================================================#
 # _omnisharp="y" # OmniSharpServer deleted
-_gocode="y"
+_gocode="n"
+_use_system_gocode="y"
 _rust="y"
 _tern="y"
 _typescript="y"
@@ -45,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2659.7080933e
+pkgver=r2663.f84dd1fb
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -99,10 +100,11 @@ if [[ "$_use_OmniSharp_Roslyn" == "y" ]];then
 fi
 
 if [[ "$_gocode" == "y" ]];then
-  # ycmd
-  source+=('git+https://github.com/golang/tools.git')
-  sha256sums+=('SKIP')
   makedepends+=('go')
+fi
+
+if [[ "$_use_system_gocode" == "y" ]];then
+  makedepends+=('gopls')
 fi
 
 if [[ "$_rust" == "y" ]];then
@@ -228,10 +230,6 @@ prepare() {
   local ycmdPathtools_themes=("flask-sphinx-themes")
   gitprepare "YouCompleteMe/third_party/ycmd/third_party/watchdog_deps" "pathtools/docs/source" "${ycmdPathtools_themes[@]}"
 
-  if [[ "$_gocode" == "y" ]]; then
-    gitprepare "YouCompleteMe/third_party/ycmd/third_party/go/src/golang.org/x" "" "tools"
-  fi
-
   if [[ "$_use_OmniSharp_Roslyn" == "y" ]];then
     if [[ "$_use_system_OmniSharp_Roslyn" == "n" ]];then
       mkdir -p "$srcdir/omnisharp-roslyn"
@@ -272,11 +270,13 @@ build() {
     rustup component add rls rust-analysis rust-src
   fi
 
-  if [[ "$_gocode" == "y" ]]; then
-    # export GOPATH="$GOPATH:$srcdir/YouCompleteMe/third_party/ycmd/third_party/go"
-    msg2 'Building Gocode completer...' # BuildGoCode()
-    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/golang.org/x/tools/gopls" || exit
-    go build
+  if [[ "$_gocode" == "y" && "$_use_system_gocode" == "n" ]]; then
+    mkdir -p "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go" || exit
+    export GO111MODULE=on
+    export GOPATH="$srcdir/YouCompleteMe/third_party/ycmd/third_party/go"
+    msg2 'Building gopls for go completion...' # BuildGoCode()
+    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go" || exit
+    go get golang.org/x/tools/gopls@v0.4.0
   else
     msg2 'Skipping Gocode completer...'
   fi
@@ -386,10 +386,15 @@ package() {
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/pathtools/docs/source"
   fi
 
-  if [[ "$_gocode" == "y" ]]; then
-    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/golang.org/x/tools/gopls"
-    cp "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/src/golang.org/x/tools/gopls/gopls" \
-      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/src/golang.org/x/tools/gopls/gopls"
+  if [[ "$_gocode" == "y" && "$_use_system_gocode" == "n" ]]; then
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go"
+    cp -rv "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go/bin" \
+      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go"
+  fi
+
+  if [[ "$_use_system_gocode" == "y" ]]; then
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/bin"
+    ln -s "/usr/bin/gopls" "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/go/bin/gopls"
   fi
 
   if [[ "$_tern" == "y" ]]; then
