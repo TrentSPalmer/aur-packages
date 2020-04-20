@@ -1,6 +1,6 @@
 pkgbase = vim-youcompleteme-git
 	pkgdesc = A code-completion engine for Vim
-	pkgver = r2663.f84dd1fb
+	pkgver = r2666.367c1518
 	pkgrel = 1
 	url = https://github.com/Valloric/YouCompleteMe
 	install = install
@@ -21,9 +21,6 @@ pkgbase = vim-youcompleteme-git
 	depends = omnisharp-roslyn
 	depends = rustup
 	depends = python
-	depends = python-jedi
-	depends = python-parso
-	depends = python-numpydoc
 	source = git+https://github.com/Valloric/YouCompleteMe.git
 	source = git+https://github.com/ycm-core/ycmd.git
 	source = git+https://github.com/davidhalter/jedi.git

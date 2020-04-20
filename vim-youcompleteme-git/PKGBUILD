@@ -33,7 +33,7 @@ _use_python2="OFF"
 _use_system_python="n"  # seems broken
 _use_OmniSharp_Roslyn="y"
 _use_system_OmniSharp_Roslyn="y"
-_use_system_jedi="y"
+_use_system_jedi="n"
 _use_system_python_watchdog="n"
 
 _neovim="$NEOVIM_YOUCOMPLETEME"
@@ -46,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2663.f84dd1fb
+pkgver=r2666.367c1518
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
