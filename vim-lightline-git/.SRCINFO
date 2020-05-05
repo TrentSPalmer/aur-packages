@@ -1,6 +1,6 @@
 pkgbase = vim-lightline-git
 	pkgdesc = A light and configurable statusline/tabline for Vim
-	pkgver = r605.b8976d2
+	pkgver = r618.1a118e1
 	pkgrel = 1
 	url = https://github.com/itchyny/lightline.vim
 	install = lightline.install
