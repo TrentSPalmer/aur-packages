@@ -20,8 +20,8 @@
 #                                          Build Options                                                  #
 #=========================================================================================================#
 # _omnisharp="y" # OmniSharpServer deleted
-_gocode="n"
-_use_system_gocode="y"
+_gocode="y"
+_use_system_gocode="n"
 _rust="y"
 _tern="y"
 _typescript="y"
@@ -32,7 +32,7 @@ _use_system_clang="ON"
 _use_python2="OFF"
 _use_system_python="n"  # seems broken
 _use_OmniSharp_Roslyn="y"
-_use_system_OmniSharp_Roslyn="y"
+_use_system_OmniSharp_Roslyn="n"
 _use_system_jedi="n"
 _use_system_python_watchdog="n"
 
@@ -46,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2707.9309f777
+pkgver=r2709.321700e8
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -89,11 +89,12 @@ sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP
 #                                     Applying PKBUILD Build Options                                      #
 #=========================================================================================================#
 
+# find omnisharp-roslyn version by greppin third_party/ycmd/build.py
 if [[ "$_use_OmniSharp_Roslyn" == "y" ]];then
   if [[ "$_use_system_OmniSharp_Roslyn" == "n" ]];then
-    source+=('https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.33.0/omnisharp-mono.tar.gz')
+    source+=('https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.35.3/omnisharp-mono.tar.gz')
     noextract=('omnisharp-mono.tar.gz')
-    sha256sums+=('c3bd370b0e31838418756f3879269b224b1920d6f3527c8f711d661dfc008c8c')
+    sha256sums+=('7e8a7b03abd697e1f961101c546eb9441c47a0406776661a659d1dddeb85c429')
   elif [[ "$_use_system_OmniSharp_Roslyn" == "y" ]];then
     depends+=('omnisharp-roslyn')
   fi
@@ -276,6 +277,7 @@ build() {
     export GOPATH="$srcdir/YouCompleteMe/third_party/ycmd/third_party/go"
     msg2 'Building gopls for go completion...' # BuildGoCode()
     cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go" || exit
+    # find gopls version by grepping third_party/ycmd/build.py
     go get golang.org/x/tools/gopls@v0.4.2
   else
     msg2 'Skipping Gocode completer...'
