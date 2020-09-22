@@ -46,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2726.37a149ee
+pkgver=r2739.4891999f
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -66,6 +66,7 @@ source=(
 'git+https://github.com/davidhalter/jedi.git'             #jedi
 'git+https://github.com/davidhalter/parso.git'            #jedi
 'git+https://github.com/davidhalter/typeshed.git'            #jedi
+'git+https://github.com/davidhalter/django-stubs'            #jedi
 'git+https://github.com/numpy/numpydoc'            #jedi
 'git+https://github.com/ross/requests-futures.git'  #ycm
 'git+https://github.com/requests/requests.git'  #ycmd
@@ -80,7 +81,7 @@ source=(
 'git+https://github.com/gorakhargosh/pathtools' 
 'git+https://github.com/mitsuhiko/flask-sphinx-themes.git' 
 )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 #=========================================================================================================#
 #=========================================================================================================#
 
@@ -92,9 +93,9 @@ sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP
 # find omnisharp-roslyn version by greppin third_party/ycmd/build.py
 if [[ "$_use_OmniSharp_Roslyn" == "y" ]];then
   if [[ "$_use_system_OmniSharp_Roslyn" == "n" ]];then
-    source+=('https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.35.3/omnisharp-mono.tar.gz')
+    source+=('https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.35.4/omnisharp-mono.tar.gz')
     noextract=('omnisharp-mono.tar.gz')
-    sha256sums+=('7e8a7b03abd697e1f961101c546eb9441c47a0406776661a659d1dddeb85c429')
+    sha256sums+=('cc6d03e9f368a386213ce6e5b994789ef1a79aa80398f77bd85146bccc68754a')
   elif [[ "$_use_system_OmniSharp_Roslyn" == "y" ]];then
     depends+=('omnisharp-roslyn')
   fi
@@ -278,7 +279,7 @@ build() {
     msg2 'Building gopls for go completion...' # BuildGoCode()
     cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go" || exit
     # find gopls version by grepping third_party/ycmd/build.py
-    go get golang.org/x/tools/gopls@v0.4.2
+    go get golang.org/x/tools/gopls@v0.4.4
   else
     msg2 'Skipping Gocode completer...'
   fi
