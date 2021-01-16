@@ -15,7 +15,7 @@ _neovim="n"
 
 _name='vim-lightline'
 pkgname="${_name}-git"
-pkgver=r658.709b2d8
+pkgver=r659.8e013f3
 pkgrel=1
 pkgdesc='A light and configurable statusline/tabline for Vim'
 arch=('any')
