@@ -1,6 +1,6 @@
 pkgbase = vim-youcompleteme-git
 	pkgdesc = A code-completion engine for Vim
-	pkgver = r2782.d52a4b3a
+	pkgver = r2784.dbf67638
 	pkgrel = 1
 	url = https://github.com/Valloric/YouCompleteMe
 	install = install
