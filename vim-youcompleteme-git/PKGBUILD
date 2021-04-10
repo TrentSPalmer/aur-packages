@@ -46,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2789.ed423e8a
+pkgver=r2791.a3d02238
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -75,13 +75,10 @@ source=(
 'git+https://github.com/chardet/chardet.git'  #requests
 'git+https://github.com/urllib3/urllib3.git'  #requests
 'git+https://github.com/bottlepy/bottle.git'  #ycmd
-'git+https://github.com/Pylons/waitress.git'              #ycmd,jediHTTP
 'git+https://bitbucket.org/mrabarnett/mrab-regex.git'
 'git+https://github.com/gorakhargosh/watchdog' 
-'git+https://github.com/gorakhargosh/pathtools' 
-'git+https://github.com/mitsuhiko/flask-sphinx-themes.git' 
 )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 #=========================================================================================================#
 #=========================================================================================================#
 
@@ -127,9 +124,9 @@ if [[ "$_use_system_python" == "n" ]]; then
   fi
 elif [[ "$_use_system_python" == "y" ]]; then
   if [[ "$_use_python2" == "OFF" ]]; then
-    depends+=('python-requests-futures' 'python-certifi' 'python-bottle' 'python-waitress' 'python-regex')
+    depends+=('python-requests-futures' 'python-certifi' 'python-bottle' 'python-regex')
   elif [[ "$_use_python2" == "ON" ]]; then
-    depends+=('python2-requests-futures' 'python2-certifi' 'python2-bottle' 'python2-waitress' 'python2-regex')
+    depends+=('python2-requests-futures' 'python2-certifi' 'python2-bottle' 'python2-regex')
   fi
 fi
 
@@ -143,9 +140,9 @@ fi
 
 if [[ "$_use_system_python_watchdog" == "y" ]]; then
   if [[ "$_use_python2" == "OFF" ]]; then
-    depends+=('python-watchdog' 'python-pathtools' 'python-flask-sphinx-themes')
+    depends+=('python-watchdog')
   elif [[ "$_use_python2" == "ON" ]]; then
-    depends+=('python2-watchdog' 'python2-pathtools')
+    depends+=('python2-watchdog')
   fi
 fi
 #=========================================================================================================#
@@ -216,21 +213,15 @@ prepare() {
   gitprepare "YouCompleteMe" "third_party/" "${YouCompleteMe[@]}"
   gitprepare "YouCompleteMe" "third_party/requests_deps/" "${YouCompleteMeRequestsDeps[@]}"
 
-  local ycmd=("bottle" "mrab-regex" "waitress")
+  local ycmd=("bottle" "mrab-regex")
 
   gitprepare "YouCompleteMe/third_party/ycmd" "third_party/" "${ycmd[@]}"
 
   local ycmdJediDeps=("jedi" "parso" "numpydoc")
   gitprepare "YouCompleteMe/third_party/ycmd" "third_party/jedi_deps" "${ycmdJediDeps[@]}"
 
-  local ycmdRequestsDeps=("python-certifi" "chardet" "idna" "requests" "urllib3")
-  gitprepare "YouCompleteMe/third_party/ycmd" "third_party/requests_deps" "${ycmdRequestsDeps[@]}"
-
-  local ycmdWatchdogDeps=("watchdog" "pathtools")
+  local ycmdWatchdogDeps=("watchdog")
   gitprepare "YouCompleteMe/third_party/ycmd" "third_party/watchdog_deps" "${ycmdWatchdogDeps[@]}"
-
-  local ycmdPathtools_themes=("flask-sphinx-themes")
-  gitprepare "YouCompleteMe/third_party/ycmd/third_party/watchdog_deps" "pathtools/docs/source" "${ycmdPathtools_themes[@]}"
 
   if [[ "$_use_OmniSharp_Roslyn" == "y" ]];then
     if [[ "$_use_system_OmniSharp_Roslyn" == "n" ]];then
@@ -281,7 +272,7 @@ build() {
     msg2 'Building gopls for go completion...' # BuildGoCode()
     cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go" || exit
     # find gopls version by grepping third_party/ycmd/build.py
-    go get golang.org/x/tools/gopls@v0.5.1
+    go get golang.org/x/tools/gopls@v0.6.4
   else
     msg2 'Skipping Gocode completer...'
   fi
@@ -332,7 +323,7 @@ package() {
 
   mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
 
-  cp -r "$srcdir/YouCompleteMe/third_party/ycmd/"{ycmd,ycm_core.so,CORE_VERSION} \
+  cp -r "$srcdir/YouCompleteMe/third_party/ycmd/"{ycmd,ycm_core.cpython-*-x86_64-linux-gnu.so,CORE_VERSION} \
     "$pkgdir/$vimfiles_dir/third_party/ycmd"
 
   cp -r "$srcdir/YouCompleteMe/"{autoload,doc,plugin,python} \
@@ -352,7 +343,6 @@ package() {
   fi
 
   if [[ "$_use_system_python" == "n" ]]; then
-    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
     mkdir -p "$pkgdir/$vimfiles_dir/third_party/requests_deps"
 
     cp -r "$srcdir/YouCompleteMe/third_party/requests-futures" \
@@ -360,10 +350,8 @@ package() {
     cp -r "$srcdir/YouCompleteMe/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
       "$pkgdir/$vimfiles_dir/third_party/requests_deps"
 
-    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,mrab-regex,waitress} \
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,mrab-regex} \
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
-    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
-      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/requests_deps"
 
   elif [[ "$_use_system_python" == "y" ]]; then
     cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/clang" \
@@ -381,14 +369,9 @@ package() {
   fi
   
   if [[ "$_use_system_python_watchdog" == "n" ]]; then
-    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/"{pathtools,watchdog}
-    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/watchdog_deps/pathtools/pathtools" \
-      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/pathtools/"
+    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/watchdog"
     cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/watchdog_deps/watchdog" \
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/"
-    mkdir -p "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/pathtools/docs/source"
-    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/watchdog_deps/pathtools/docs/source/_themes" \
-      "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/watchdog_deps/pathtools/docs/source"
   fi
 
   if [[ "$_gocode" == "y" && "$_use_system_gocode" == "n" ]]; then
