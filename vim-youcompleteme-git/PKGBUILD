@@ -46,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2796.c8acf70d
+pkgver=r2807.ee7f9b64
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -68,17 +68,11 @@ source=(
 'git+https://github.com/davidhalter/typeshed.git'            #jedi
 'git+https://github.com/davidhalter/django-stubs'            #jedi
 'git+https://github.com/numpy/numpydoc'            #jedi
-'git+https://github.com/ross/requests-futures.git'  #ycm
-'git+https://github.com/requests/requests.git'  #ycmd
-'git+https://github.com/kjd/idna.git'  #requests
-'git+https://github.com/certifi/python-certifi.git'  #requests
-'git+https://github.com/chardet/chardet.git'  #requests
-'git+https://github.com/urllib3/urllib3.git'  #requests
 'git+https://github.com/bottlepy/bottle.git'  #ycmd
 'git+https://bitbucket.org/mrabarnett/mrab-regex.git'
 'git+https://github.com/gorakhargosh/watchdog' 
 )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 #=========================================================================================================#
 #=========================================================================================================#
 
@@ -124,9 +118,9 @@ if [[ "$_use_system_python" == "n" ]]; then
   fi
 elif [[ "$_use_system_python" == "y" ]]; then
   if [[ "$_use_python2" == "OFF" ]]; then
-    depends+=('python-requests-futures' 'python-certifi' 'python-bottle' 'python-regex')
+    depends+=('python-bottle' 'python-regex')
   elif [[ "$_use_python2" == "ON" ]]; then
-    depends+=('python2-requests-futures' 'python2-certifi' 'python2-bottle' 'python2-regex')
+    depends+=('python2-bottle' 'python2-regex')
   fi
 fi
 
@@ -207,11 +201,9 @@ prepare() {
 
   msg2 'Setting up Git submodules...'
 
-  local YouCompleteMe=("requests-futures" "ycmd")
-  local YouCompleteMeRequestsDeps=("idna" "python-certifi" "chardet" "urllib3" "requests")
+  local YouCompleteMe=("ycmd")
 
   gitprepare "YouCompleteMe" "third_party/" "${YouCompleteMe[@]}"
-  gitprepare "YouCompleteMe" "third_party/requests_deps/" "${YouCompleteMeRequestsDeps[@]}"
 
   local ycmd=("bottle" "mrab-regex")
 
@@ -343,12 +335,6 @@ package() {
   fi
 
   if [[ "$_use_system_python" == "n" ]]; then
-    mkdir -p "$pkgdir/$vimfiles_dir/third_party/requests_deps"
-
-    cp -r "$srcdir/YouCompleteMe/third_party/requests-futures" \
-      "$pkgdir/$vimfiles_dir/third_party"
-    cp -r "$srcdir/YouCompleteMe/third_party/requests_deps/"{certifi,chardet,idna,requests,urllib3} \
-      "$pkgdir/$vimfiles_dir/third_party/requests_deps"
 
     cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,mrab-regex} \
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
