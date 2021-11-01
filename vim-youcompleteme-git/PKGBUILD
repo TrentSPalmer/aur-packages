@@ -46,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2837.b9925795
+pkgver=r2839.46937cf9
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -264,7 +264,7 @@ build() {
     msg2 'Building gopls for go completion...' # BuildGoCode()
     cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go" || exit
     # find gopls version by grepping third_party/ycmd/build.py
-    go get golang.org/x/tools/gopls@v0.6.4
+    go install golang.org/x/tools/gopls@v0.6.4
   else
     msg2 'Skipping Gocode completer...'
   fi
