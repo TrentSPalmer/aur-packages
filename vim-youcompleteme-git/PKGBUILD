@@ -46,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2848.2badfc08
+pkgver=r2854.4e10490c
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -84,7 +84,7 @@ sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP
 # find omnisharp-roslyn version by greppin third_party/ycmd/build.py
 if [[ "$_use_OmniSharp_Roslyn" == "y" ]];then
   if [[ "$_use_system_OmniSharp_Roslyn" == "n" ]];then
-    source+=('https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.35.4/omnisharp-mono.tar.gz')
+    source+=('https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.37.11/omnisharp-mono.tar.gz')
     noextract=('omnisharp-mono.tar.gz')
     sha256sums+=('cc6d03e9f368a386213ce6e5b994789ef1a79aa80398f77bd85146bccc68754a')
   elif [[ "$_use_system_OmniSharp_Roslyn" == "y" ]];then
@@ -264,7 +264,7 @@ build() {
     msg2 'Building gopls for go completion...' # BuildGoCode()
     cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go" || exit
     # find gopls version by grepping third_party/ycmd/build.py
-    go install golang.org/x/tools/gopls@v0.6.4
+    go install golang.org/x/tools/gopls@v0.7.1
   else
     msg2 'Skipping Gocode completer...'
   fi
