@@ -46,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r2856.9ee19df6
+pkgver=r2860.ab28bd7a
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
