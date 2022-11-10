@@ -46,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r3012.99ccab25
+pkgver=r3013.728b4772
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -166,7 +166,7 @@ gitprepare() {
     git config submodule."$git_prefix$gitsubvar".url "$srcdir/$gitsubvar"
   done
 
-  git submodule update
+  git submodule--helper update
   unset -v feed
 }
 
