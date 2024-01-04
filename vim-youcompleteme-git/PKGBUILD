@@ -46,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r3134.cc9a3ae3
+pkgver=r3148.71166ea1
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -69,7 +69,7 @@ source=(
 'git+https://github.com/davidhalter/django-stubs'            #jedi
 'git+https://github.com/numpy/numpydoc'            #jedi
 'git+https://github.com/bottlepy/bottle.git'  #ycmd
-'git+https://bitbucket.org/mrabarnett/mrab-regex.git'
+'git+https://github.com/mrabarnett/mrab-regex'
 'git+https://github.com/gorakhargosh/watchdog' 
 )
 sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
@@ -238,14 +238,14 @@ build() {
   # if [[ "$_use_system_python" == "n" ]]; then
     # mkdir -p "$srcdir/regex_build"
     # cd "$srcdir/regex_build" || exit
-    # cmake -G "Unix Makefiles" -DUSE_PYTHON2=$_use_python2 -DUSE_SYSTEM_LIBCLANG="$_use_system_clang" . "$srcdir/YouCompleteMe/third_party/ycmd/third_party/mrab-regex"
+    # cmake -G "Unix Makefiles" -DUSE_PYTHON2=$_use_python2 -DUSE_SYSTEM_LIBCLANG="$_use_system_clang" . "$srcdir/YouCompleteMe/third_party/ycmd/third_party/mrab-regex-github"
     # make _regex
   # fi
 
   if [[ "$_use_system_python" == "n" ]]; then
     cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/watchdog_deps/watchdog" || { echo "cant cd to watchdog" ; exit ; }
     python setup.py build --build-base="build/3" --build-lib="build/lib3" || { echo "fail build watchdog" ; exit ; }
-    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/mrab-regex" || { echo "cant cd to mrab-regex" ; exit ; }
+    cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/mrab-regex-github" || { echo "cant cd to mrab-regex-github" ; exit ; }
     python setup.py build --build-base="regex-build/3" --build-lib="regex-build" || { echo "fail build watchdog" ; exit ; }
   fi
 
@@ -264,7 +264,7 @@ build() {
     msg2 'Building gopls for go completion...' # BuildGoCode()
     cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go" || exit
     # find gopls version by grepping third_party/ycmd/build.py
-    go install golang.org/x/tools/gopls@v0.13.2
+    go install golang.org/x/tools/gopls@v0.14.0
   else
     msg2 'Skipping Gocode completer...'
   fi
@@ -336,7 +336,7 @@ package() {
 
   if [[ "$_use_system_python" == "n" ]]; then
 
-    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,mrab-regex} \
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,mrab-regex-github} \
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
 
   elif [[ "$_use_system_python" == "y" ]]; then
