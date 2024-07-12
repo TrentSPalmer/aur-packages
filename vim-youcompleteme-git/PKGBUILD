@@ -46,7 +46,7 @@ _neovim="$NEOVIM_YOUCOMPLETEME"
 #                                    Default PKGBUILD Configuration                                       #
 #=========================================================================================================#
 pkgname=vim-youcompleteme-git
-pkgver=r3173.45560628
+pkgver=r3210.b5fe27bb
 pkgver() {
   cd "YouCompleteMe" || exit
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -68,11 +68,10 @@ source=(
 'git+https://github.com/davidhalter/typeshed.git'            #jedi
 'git+https://github.com/davidhalter/django-stubs'            #jedi
 'git+https://github.com/numpy/numpydoc'            #jedi
-'git+https://github.com/bottlepy/bottle.git'  #ycmd
 'git+https://github.com/mrabarnett/mrab-regex'
 'git+https://github.com/gorakhargosh/watchdog' 
 )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 #=========================================================================================================#
 #=========================================================================================================#
 
@@ -86,7 +85,7 @@ if [[ "$_use_OmniSharp_Roslyn" == "y" ]];then
   if [[ "$_use_system_OmniSharp_Roslyn" == "n" ]];then
     source+=('https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.37.11/omnisharp-mono.tar.gz')
     noextract=('omnisharp-mono.tar.gz')
-    sha256sums+=('cc6d03e9f368a386213ce6e5b994789ef1a79aa80398f77bd85146bccc68754a')
+    sha256sums+=('6060d44229abb27076eeed33d5909c1c69422e52b352c1ce24e0eb1f71d19b48')
   elif [[ "$_use_system_OmniSharp_Roslyn" == "y" ]];then
     depends+=('omnisharp-roslyn')
   fi
@@ -118,9 +117,9 @@ if [[ "$_use_system_python" == "n" ]]; then
   fi
 elif [[ "$_use_system_python" == "y" ]]; then
   if [[ "$_use_python2" == "OFF" ]]; then
-    depends+=('python-bottle' 'python-regex')
+    depends+=('python-regex')
   elif [[ "$_use_python2" == "ON" ]]; then
-    depends+=('python2-bottle' 'python2-regex')
+    depends+=('python2-regex')
   fi
 fi
 
@@ -205,7 +204,7 @@ prepare() {
 
   gitprepare "YouCompleteMe" "third_party/" "${YouCompleteMe[@]}"
 
-  local ycmd=("bottle" "mrab-regex")
+  local ycmd=("mrab-regex")
 
   gitprepare "YouCompleteMe/third_party/ycmd" "third_party/" "${ycmd[@]}"
 
@@ -264,7 +263,7 @@ build() {
     msg2 'Building gopls for go completion...' # BuildGoCode()
     cd "$srcdir/YouCompleteMe/third_party/ycmd/third_party/go" || exit
     # find gopls version by grepping third_party/ycmd/build.py
-    go install golang.org/x/tools/gopls@v0.14.0
+    go install golang.org/x/tools/gopls@v0.15.3
   else
     msg2 'Skipping Gocode completer...'
   fi
@@ -336,7 +335,7 @@ package() {
 
   if [[ "$_use_system_python" == "n" ]]; then
 
-    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{bottle,clang,mrab-regex-github} \
+    cp -r "$srcdir/YouCompleteMe/third_party/ycmd/third_party/"{clang,mrab-regex-github} \
       "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party"
 
   elif [[ "$_use_system_python" == "y" ]]; then
@@ -394,16 +393,6 @@ package() {
   if [[ "$_tests" == "n" ]]; then
     find "$pkgdir" -name tests -exec rm -fr {} +
     find "$pkgdir" -name 'test' -exec rm -fr {} +
-  fi
-
-  # Remove any file we cannot compile using a specfic python version
-  if [[ "$_use_python2" == "ON" ]]; then
-    :
-  else
-    if [[ "$_use_system_python" == "n" ]]; then
-      rm -r "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/bottle/plugins/werkzeug/bottle_werkzeug.py"
-      rm -r "$pkgdir/$vimfiles_dir/third_party/ycmd/third_party/bottle/plugins/sqlite/bottle_sqlite.py"
-    fi  
   fi
 
   # Remove unneeded docs

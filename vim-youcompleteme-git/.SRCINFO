@@ -1,6 +1,6 @@
 pkgbase = vim-youcompleteme-git
 	pkgdesc = A code-completion engine for Vim
-	pkgver = r3173.45560628
+	pkgver = r3210.b5fe27bb
 	pkgrel = 1
 	url = https://github.com/Valloric/YouCompleteMe
 	install = install
@@ -28,7 +28,6 @@ pkgbase = vim-youcompleteme-git
 	source = git+https://github.com/davidhalter/typeshed.git
 	source = git+https://github.com/davidhalter/django-stubs
 	source = git+https://github.com/numpy/numpydoc
-	source = git+https://github.com/bottlepy/bottle.git
 	source = git+https://github.com/mrabarnett/mrab-regex
 	source = git+https://github.com/gorakhargosh/watchdog
 	source = https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.37.11/omnisharp-mono.tar.gz
@@ -41,7 +40,6 @@ pkgbase = vim-youcompleteme-git
 	sha256sums = SKIP
 	sha256sums = SKIP
 	sha256sums = SKIP
-	sha256sums = SKIP
-	sha256sums = cc6d03e9f368a386213ce6e5b994789ef1a79aa80398f77bd85146bccc68754a
+	sha256sums = 6060d44229abb27076eeed33d5909c1c69422e52b352c1ce24e0eb1f71d19b48
 
 pkgname = vim-youcompleteme-git
